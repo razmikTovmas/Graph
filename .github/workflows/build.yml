@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build project
+      run: |
+        mkdir Build
+        cd Build
+        cmake ..
+        make -j 10
+    - name: Run examples
+      run: |
+        cd Build/Examples
+        ./Basic
