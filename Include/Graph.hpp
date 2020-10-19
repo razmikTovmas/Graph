@@ -78,7 +78,7 @@ public:
      * @return true if the edge was added successfully, false if the edge already
      *          exists (nothing happens in this case).
      */
-    bool AddEdge(const std::string& from, const std::string& to, int cost = 1);
+    bool AddEdge(const std::string& from, const std::string& to, Edge::Cost_t cost = 1);
 
     /**
      * @brief Removes the edge between from and to nodes.
@@ -116,6 +116,8 @@ private:
 
 private:
     std::vector<Node*> m_adjList;
+    //! TODO: Replace id with actual pointer, othervise need to update id.
+    //!       Currently this is a bug.
     std::map<std::string, size_t> m_nameToId;
 
 };
@@ -222,18 +224,12 @@ inline bool Graph::HasEdge(const std::string& from, const std::string& to)
     return fromNode->HasEdge(toNode);
 }
 
-bool Graph::AddEdge(const std::string& from, const std::string& to, int cost)
+bool Graph::AddEdge(const std::string& from, const std::string& to, Edge::Cost_t cost)
 {
     Node* fromNode = getOrCreateNode(from);
     Node* toNode = getOrCreateNode(to);
-    if (fromNode->HasEdge(toNode)) {
-        return false;
-    }
 
-    const bool res = fromNode->AddEdge(toNode, cost);
-    assert(fromNode->HasEdge(toNode));
-
-    return res;
+    return fromNode->AddEdge(toNode, cost);
 }
 
 bool Graph::RemoveEdge(const std::string& from, const std::string& to)

@@ -24,6 +24,7 @@ int main()
 
     g.Dump();
     g.RemoveEdge("A", "B");
+    g.RemoveEdge("A", "C");
     g.Dump();
 
     return 0;

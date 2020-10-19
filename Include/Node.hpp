@@ -5,9 +5,12 @@
 
 #include <algorithm>
 
+#include "Edge.hpp"
+
 /**
  * @class Node
  * @brief Node object of the graph data structure.
+ * @note Supports multigraph
  */
 class Node
 {
@@ -35,14 +38,14 @@ public:
     /**
      * @brief Get the name of the node.
      */
-    [[nodiscard]] const std::string& GetName() const;
+    [[nodiscard]] const std::string& GetName() const { return m_name; }
 
     /**
      * @brief Add edge to the destinaion node with the given cost.
      * 
      * @return true if the edge was added successfully, otherwise false.
      */
-    [[nodiscard]] inline bool AddEdge(Node* to, int cost = 1);
+    [[nodiscard]] bool AddEdge(Node* to, Edge::Cost_t cost = 1);
 
     /**
      * @brief Checks weather the edge exists from the current node to the given.
@@ -63,7 +66,7 @@ public:
 private:
     size_t m_id;
     const std::string m_name;
-    std::vector<std::pair<Node*, int>> m_neighbors;
+    std::vector<Edge*> m_edges;
 
 };
 
@@ -72,26 +75,34 @@ Node::Node(size_t id, const std::string& name)
     , m_name(name)
 { }
 
-bool Node::HasEdge(Node* to) const
+inline bool Node::HasEdge(Node* to) const
 {
-    return std::find_if(m_neighbors.begin(), m_neighbors.end(), [to](auto& pair) { return pair.first == to; }) != m_neighbors.end();
+    for (auto& edge : m_edges) {
+        if (to == edge->GetTo()) {
+            return true;
+        }
+    }
+    return false;
 }
 
-bool Node::AddEdge(Node* to, int cost)
+bool Node::AddEdge(Node* to, Edge::Cost_t cost)
 {
-    if (HasEdge(to)) {
-        return false;
-    }
-    m_neighbors.push_back({to, cost});
+    // if (std::find(m_edges.begin(), m_edges.end(), edge) != m_edges.end()) {
+    //     return false;
+    // }
+    // (from, to) can repeat - supports multigraph (not sure if I need this)
+    Edge* edge = new Edge(this, to, cost);
+    m_edges.push_back(edge);
     return true;
 }
 
-inline bool Node::RemoveEdge(Node* to)
+bool Node::RemoveEdge(Node* to)
 {
-    auto it = std::find_if(m_neighbors.begin(), m_neighbors.end(), [to](auto& pair) { return pair.first == to; });
-    if (m_neighbors.end() != it) {
-        m_neighbors.erase(it);
-        return true;
+    for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
+        if (to == (*it)->GetTo()) {
+            m_edges.erase(it);
+            return true;
+        }
     }
     return false;
 }
@@ -99,7 +110,8 @@ inline bool Node::RemoveEdge(Node* to)
 void Node::Dump(std::ostream &os) const
 {
     os << m_name << ":" << std::endl;
-    for (auto [node, cost] : m_neighbors) {
-        os << "  to: " << node->m_name << ", cost: " << cost << std::endl;
+    for (auto& edge : m_edges) {
+        os << "  to: " << edge->GetTo()->GetName()
+           << ", cost: " << edge->GetCost() << std::endl;
     }
 }
