@@ -14,6 +14,9 @@
  */
 class Graph
 {
+private:
+    constexpr static size_t INVALID_ID = std::numeric_limits<size_t>::max();
+
 public:
     using NodeIter = std::vector<std::string>;
     using EdgeIter = std::vector<std::tuple<std::string, std::string, int>>;
@@ -114,6 +117,7 @@ private:
 private:
     std::vector<Node*> m_adjList;
     std::map<std::string, size_t> m_nameToId;
+
 };
 
 inline size_t Graph::getNodeId(const std::string& name) const
@@ -122,13 +126,13 @@ inline size_t Graph::getNodeId(const std::string& name) const
     if (it != m_nameToId.end()) {
         return it->second;
     }
-    return std::numeric_limits<size_t>::max();
+    return INVALID_ID;
 }
 
 inline Node* Graph::getNode(const std::string& name)
 {
     const size_t id = getNodeId(name);
-    if (std::numeric_limits<size_t>::max() == id) {
+    if (INVALID_ID == id) {
         return nullptr;
     }
     return m_adjList[id];
@@ -187,6 +191,21 @@ bool Graph::AddNode(const std::string& name)
 bool Graph::RemoveNode(const std::string& name)
 {
     // Not implemented yet
+    Node* node = getNode(name);
+    if (nullptr == node) {
+        return false;
+    }
+
+    size_t id = node->GetId();
+
+    std::vector<Node*>::iterator iter = m_adjList.erase(m_adjList.begin() + id);
+    std::cout << "New idx: " << std::distance(m_adjList.begin(), iter) << std::endl;
+    std::cout << "Old idx: " << (*iter)->GetId() << std::endl;
+
+    for (; iter != m_adjList.end(); ++iter, ++id) {
+        (*iter)->SetId(id);
+        (void)(*iter)->RemoveEdge(node);
+    }
 
     return true;
 }
@@ -199,6 +218,7 @@ inline bool Graph::HasEdge(const std::string& from, const std::string& to)
     if (nullptr == fromNode || nullptr == toNode) {
         return false;
     }
+
     return fromNode->HasEdge(toNode);
 }
 
@@ -214,6 +234,14 @@ bool Graph::AddEdge(const std::string& from, const std::string& to, int cost)
     assert(fromNode->HasEdge(toNode));
 
     return res;
+}
+
+bool Graph::RemoveEdge(const std::string& from, const std::string& to)
+{
+    Node* fromNode = getNode(from);
+    Node* toNode = getNode(to);
+
+    return fromNode->RemoveEdge(toNode);
 }
 
 void Graph::Dump(std::ostream& os) const

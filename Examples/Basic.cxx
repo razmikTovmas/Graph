@@ -23,6 +23,8 @@ int main()
     g.AddEdge("C", "C", 5);
 
     g.Dump();
+    g.RemoveEdge("A", "B");
+    g.Dump();
 
     return 0;
 }
