@@ -23,7 +23,7 @@ public:
     /**
      * @brief Destroy the Node object.
      */
-    ~Node() = default;
+    ~Node();
 
     /**
      * @brief Get the id of the node.
@@ -58,6 +58,12 @@ public:
      */
     [[nodiscard]] inline bool RemoveEdge(Node* to);
 
+    std::vector<Edge*>::iterator Begin() { return m_edges.begin(); }
+    std::vector<Edge*>::iterator End() { return m_edges.end(); }
+
+    const std::vector<Edge*>& GetEdges() { return m_edges; }
+
+
     /**
      * @brief Dumps the node object to ostream.
      */
@@ -74,6 +80,11 @@ Node::Node(size_t id, const std::string& name)
     : m_id(id)
     , m_name(name)
 { }
+
+Node::~Node()
+{
+    std::destroy(m_edges.begin(), m_edges.end());
+}
 
 inline bool Node::HasEdge(Node* to) const
 {

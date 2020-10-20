@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <queue>
+#include <stack>
 
 #include <cassert>
 
@@ -11,9 +13,14 @@
 /**
  * @class Graph
  * @brief Class representing a graph data structure.
+ * 
+ * @todo Add API to take iterators.
  */
 class Graph
 {
+public:
+    class BreadthFirstIterator;
+    class DepthFirstIterator;
 private:
     constexpr static size_t INVALID_ID = std::numeric_limits<size_t>::max();
 
@@ -104,6 +111,8 @@ public:
      */
     EdgeIter Edges();
 
+    inline BreadthFirstIterator GetNodeIter(size_t start);
+
     /**
      * @brief Dumps the graph object to ostream.
      */
@@ -122,6 +131,45 @@ private:
 
 };
 
+/**
+ * @class Graph::BreadthFirstIterator
+ * @brief Breadth first iterator for graph
+ */
+class Graph::BreadthFirstIterator
+{
+public:
+    BreadthFirstIterator(Graph& graph, size_t start = 0);
+public:
+    bool Next();
+    Node* Get();
+private:
+    Graph& m_graph;
+    std::vector<bool> m_visited;
+    std::queue<Node*> m_queue;
+    Node* m_node;
+};
+
+/**
+ * @class Graph::DepthFirstIterator
+ * @brief Depth first iterator for graph
+ */
+class Graph::DepthFirstIterator
+{
+public:
+    DepthFirstIterator(Graph& graph, size_t start = 0);
+public:
+    bool Next();
+    Node* Get();
+private:
+    Graph& m_graph;
+    std::vector<bool> m_visited;
+    std::stack<Node*> m_stack;
+    Node* m_node;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+///// Graph
+////////////////////////////////////////////////////////////////////////////////
 inline size_t Graph::getNodeId(const std::string& name) const
 {
     auto it = m_nameToId.find(name);
@@ -240,9 +288,90 @@ bool Graph::RemoveEdge(const std::string& from, const std::string& to)
     return fromNode->RemoveEdge(toNode);
 }
 
+inline Graph::BreadthFirstIterator Graph::GetNodeIter(size_t start)
+{
+    return BreadthFirstIterator(*this, start);
+}
+
 void Graph::Dump(std::ostream& os) const
 {
     for (const auto* node : m_adjList) {
         node->Dump(os);
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///// Graph::BreadthFirstIterator
+////////////////////////////////////////////////////////////////////////////////
+Graph::BreadthFirstIterator::BreadthFirstIterator(Graph& graph, size_t start)
+    : m_graph(graph)
+    , m_visited(m_graph.Size(), false)
+    , m_queue({m_graph.m_adjList[start]})
+    , m_node(nullptr)
+{
+    m_visited[start] = true;
+}
+
+bool Graph::BreadthFirstIterator::Next()
+{
+    if (m_queue.empty()) {
+        return false;
+    }
+
+    m_node = m_queue.front();
+    m_queue.pop();
+
+    for (auto* edge : m_node->GetEdges()) {
+        Node* to = edge->GetTo();
+        const size_t id = to->GetId();
+        if (!m_visited[id]) {
+            m_visited[id] = true;
+            m_queue.push(to);
+        }
+    }
+
+    return true;
+}
+
+Node* Graph::BreadthFirstIterator::Get()
+{
+    return m_node;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///// Graph::DepthFirstIterator
+////////////////////////////////////////////////////////////////////////////////
+Graph::DepthFirstIterator::DepthFirstIterator(Graph& graph, size_t start)
+    : m_graph(graph)
+    , m_visited(m_graph.Size(), false)
+    , m_stack({m_graph.m_adjList[start]})
+    , m_node(nullptr)
+{
+    m_visited[start] = true;
+}
+
+bool Graph::DepthFirstIterator::Next()
+{
+    if (m_stack.empty()) {
+        return false;
+    }
+
+    m_node = m_stack.top();
+    m_stack.pop();
+
+    for (auto* edge : m_node->GetEdges()) {
+        Node* to = edge->GetTo();
+        const size_t id = to->GetId();
+        if (!m_visited[id]) {
+            m_visited[id] = true;
+            m_stack.push(to);
+        }
+    }
+
+    return true;
+}
+
+Node* Graph::DepthFirstIterator::Get()
+{
+    return m_node;
 }

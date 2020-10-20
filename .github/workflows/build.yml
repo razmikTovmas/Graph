@@ -21,3 +21,5 @@ jobs:
       run: |
         cd Build/Examples
         ./Basic
+        ./BreadthFirstIterator
+        ./DepthFirstIterator

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 
 #include "Graph.hpp"
 
@@ -14,17 +13,15 @@ int main()
     g.AddNode("B");
     g.AddNode("C");
 
-    std::cout << "Size: " << g.Size() << std::endl;
-
-    g.AddEdge("A", "B", 3);
-    g.AddEdge("A", "C", 1);
+    g.AddEdge("A", "B", 5);
     g.AddEdge("A", "C", 2);
-    g.AddEdge("B", "A", 1);
-    g.AddEdge("C", "C", 5);
+    g.AddEdge("B", "D", 1);
+    g.AddEdge("D", "E", 3);
+    g.AddEdge("C", "E", 4);
+    g.AddEdge("E", "C", 3);
+    g.AddEdge("C", "A", 2);
 
-    g.Dump();
-    g.RemoveEdge("A", "B");
-    g.RemoveEdge("A", "C");
+    std::cout << "Size: " << g.Size() << std::endl;
     g.Dump();
 
     return 0;

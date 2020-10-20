@@ -16,11 +16,15 @@ public:
         , m_cost{cost}
     { }
 
+    ~Edge() = default;
+
     inline void SetFrom(Node* from) noexcept { m_from = from; }
     inline void SetTo(Node* to) noexcept { m_to = to; }
 
     [[nodiscard]] const Node* GetFrom() const noexcept { return m_from; }
+    [[nodiscard]] Node* GetFrom() noexcept { return m_from; }
     [[nodiscard]] const Node* GetTo() const noexcept { return m_to; }
+    [[nodiscard]] Node* GetTo() noexcept { return m_to; }
 
     inline void SetCost(Cost_t cost) noexcept { m_cost = cost; }
     [[nodiscard]] Cost_t GetCost() const noexcept { return m_cost; }
