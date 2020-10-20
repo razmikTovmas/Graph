@@ -19,6 +19,10 @@ Graphs can be **directed** or **undirected**
 - Directed graph: The relationships are based on the direction of the edges. It can be a one way relationship or a two-way relationship, but it must be explicitly stated.
 - Undirected graph: The relationship exists in both directions. Can be represented via directed graph.
 
+### Traversing a graph
+- Breadth first search: [Wiki](https://en.wikipedia.org/wiki/Breadth-first_search)
+- Depth first search: [Wiki](https://en.wikipedia.org/wiki/Depth-first_search)
+
 ## How to Build
 
 ```
@@ -30,6 +34,8 @@ make -j <job count>
 
 ### Code Examples
 - [Basic Usage](./Examples/Basic.cxx)
+- [Breadth first iterator](./Examples/BreadthFirstIterator.cxx)
+- [Depth first iterator](./Examples/DepthFirstIterator.cxx)
 
 ### Running Examples
 ```
