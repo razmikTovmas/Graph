@@ -21,6 +21,7 @@ class Graph
 public:
     class BreadthFirstIterator;
     class DepthFirstIterator;
+
 private:
     constexpr static size_t INVALID_ID = std::numeric_limits<size_t>::max();
 
@@ -117,6 +118,55 @@ public:
      * @brief Dumps the graph object to ostream.
      */
     void Dump(std::ostream& os = std::cout) const;
+
+    /**
+     * @class Iterator
+     * @brief Iterator class to provide DFS and BFS traversal functionality.
+     */
+    class Iterator
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = Node;
+        using difference_type = size_t;
+        using pointer = Node*;
+        using reference = Node&;
+    public:
+        enum class IterType
+        {
+            DFS,
+            BFS
+        };
+
+    public:
+        Iterator(Graph& graph, size_t start, IterType type);
+        ~Iterator() = default;
+
+        explicit Iterator(Graph& graph, IterType type);
+        Iterator& operator++();
+        Iterator operator++(int);
+
+        //! NOTE: if iter_types are the same, and if nodes they point to
+        //        are the same, they are equal
+        bool operator==(Iterator other) const;
+        bool operator!=(Iterator other) const;
+        reference operator*() const;
+
+    private:
+        void collectNodes();
+
+    private:
+        Graph& m_graph;
+        IterType m_type;
+        Node* m_node; // nullptr means the end of the graph
+        std::vector<bool> m_visited;
+        std::deque<Node*> m_deque;
+    };
+
+    Iterator BeginBFS(size_t start) { return Iterator(*this, start, Iterator::IterType::BFS); }
+    Iterator EndBFS() { return Iterator(*this, INVALID_ID, Iterator::IterType::BFS); }
+    Iterator BeginDFS(size_t start) { return Iterator(*this, start, Iterator::IterType::DFS); }
+    Iterator EndDFS() { return Iterator(*this, INVALID_ID, Iterator::IterType::DFS); }
 
 private:
     [[nodiscard]] inline size_t getNodeId(const std::string& name) const;
@@ -374,4 +424,76 @@ bool Graph::DepthFirstIterator::Next()
 Node* Graph::DepthFirstIterator::Get()
 {
     return m_node;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///// Graph::Iterator
+////////////////////////////////////////////////////////////////////////////////
+Graph::Iterator::Iterator(Graph& graph, size_t start, IterType type)
+    : m_graph(graph)
+    , m_type(type)
+    , m_node(nullptr)
+    , m_visited(m_graph.Size(), false)
+    , m_deque()
+{
+    if (Graph::INVALID_ID == start || m_graph.IsEmpty()) {
+        return;
+    }
+
+    m_node = m_graph.m_adjList[start];
+    m_visited[start] = true;
+    collectNodes();
+}
+
+Graph::Iterator& Graph::Iterator::operator++()
+{
+    if (m_deque.empty()) {
+        m_node = nullptr;
+        return *this;
+    }
+
+    if (IterType::BFS == m_type) {
+        m_node = m_deque.front();
+        m_deque.pop_front();
+    } else {
+        m_node = m_deque.back();
+        m_deque.pop_back();
+    }
+    collectNodes();
+
+    return *this;
+}
+
+Graph::Iterator Graph::Iterator::operator++(int)
+{
+    Iterator tmp = *this;
+    ++*this;
+    return tmp;
+}
+
+bool Graph::Iterator::operator==(Iterator other) const
+{
+    return (m_type == other.m_type && m_node == other.m_node);
+}
+
+bool Graph::Iterator::operator!=(Iterator other) const
+{
+    return !(*this == other);
+}
+
+Graph::Iterator::reference Graph::Iterator::operator*() const
+{
+    return *m_node;
+}
+
+void Graph::Iterator::collectNodes()
+{
+    for (auto* edge : m_node->GetEdges()) {
+        Node* to = edge->GetTo();
+        const size_t id = to->GetId();
+        if (!m_visited[id]) {
+            m_visited[id] = true;
+            m_deque.push_back(to);
+        }
+    }
 }

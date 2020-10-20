@@ -6,3 +6,6 @@ target_link_libraries(BreadthFirstIterator PRIVATE graph::graph)
 
 add_executable(DepthFirstIterator DepthFirstIterator.cxx)
 target_link_libraries(DepthFirstIterator PRIVATE graph::graph)
+
+add_executable(Iterator Iterator.cxx)
+target_link_libraries(Iterator PRIVATE graph::graph)
