@@ -33,8 +33,8 @@ make -j <job count>
 ```
 
 ### Code Examples
-- [Basic Usage](./Examples/Basic.cxx)
-- [Iterators](./Examples/Iterator.cxx)
+- [Basic Usage](./examples/Basic.cxx)
+- [Iterators](./examples/Iterator.cxx)
 
 ### Running Examples
 ```

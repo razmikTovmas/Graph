@@ -3,7 +3,7 @@ project(graph VERSION 1.0.0 LANGUAGES CXX)
 option(console_BUILD_TESTS OFF)
 option(EXAMPLES "Build Examples" ON)
 
-set(CONSOLE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Include)
+set(CONSOLE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -19,8 +19,8 @@ endif()
 
 target_include_directories(graph INTERFACE
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/Include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>)
 
 if (EXAMPLES)
-  add_subdirectory(Examples)
+  add_subdirectory(examples)
 endif()
