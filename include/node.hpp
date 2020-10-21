@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <algorithm>
@@ -21,7 +22,7 @@ public:
     /**
      * @brief Construct a new node object with the given id and name.
      */
-    node(size_t id, const std::string& name);
+    node(size_t id, std::string  name);
 
     /**
      * @brief Destroy the node object.
@@ -72,6 +73,46 @@ public:
      */
     void dump(std::ostream &os) const;
 
+    class node_iterator
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = node;
+        using difference_type = size_t;
+        using pointer = node*;
+        using reference = node&;
+    public:
+        node_iterator(std::vector<edge*>::iterator iter)
+            : m_iter(iter)
+        { }
+
+        ~node_iterator() = default;
+
+        node_iterator& operator++()
+        {
+            ++m_iter;
+            return *this;
+        }
+        node_iterator operator++(int)
+        {
+            node_iterator temp{*this};
+            ++m_iter;
+            return temp;
+        }
+
+        //! NOTE: if iter_types are the same, and if nodes they point to
+        //        are the same, they are equal
+        bool operator==(const node_iterator& other) const { return m_iter == other.m_iter; }
+        bool operator!=(const node_iterator& other) const { return m_iter != other.m_iter; }
+        pointer operator*() const { return (*m_iter)->get_to(); }
+
+    private:
+        std::vector<edge*>::iterator m_iter;
+    };
+
+    node_iterator begin_nods() { return node_iterator(m_edges.begin()); }
+    node_iterator end_nods() { return node_iterator(m_edges.end()); }
+
 private:
     size_t m_id;
     const std::string m_name;
@@ -79,9 +120,9 @@ private:
 
 };
 
-node::node(size_t id, const std::string& name)
+node::node(size_t id, std::string  name)
     : m_id(id)
-    , m_name(name)
+    , m_name(std::move(name))
 { }
 
 node::~node()

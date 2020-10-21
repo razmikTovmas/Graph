@@ -136,45 +136,47 @@ public:
         };
 
     public:
-        iterator(graph& graph, size_t start, iter_type type);
+        explicit iterator(const graph& g, node* n, iter_type type);
         ~iterator() = default;
 
-        explicit iterator(graph& graph, iter_type type);
         iterator& operator++();
         iterator operator++(int);
 
         //! NOTE: if iter_types are the same, and if nodes they point to
         //        are the same, they are equal
-        bool operator==(iterator other) const;
-        bool operator!=(iterator other) const;
+        bool operator==(const iterator& other) const;
+        bool operator!=(const iterator& other) const;
         reference operator*() const;
+
+        [[nodiscard]] inline bool is_BFS() noexcept { return iter_type::BFS == m_type; }
+        [[nodiscard]] inline bool is_DFS() noexcept { return iter_type::DFS == m_type; }
 
     private:
         void collect_nodes();
 
     private:
-        graph& m_graph;
         iter_type m_type;
         node* m_node; // nullptr means the end of the graph
         std::vector<bool> m_visited;
         std::deque<node*> m_deque;
     };
 
-    iterator begin_BFS(size_t start) { return iterator(*this, start, iterator::iter_type::BFS); }
-    iterator end_BFS() { return iterator(*this, INVALID_ID, iterator::iter_type::BFS); }
-    iterator begin_DFS(size_t start) { return iterator(*this, start, iterator::iter_type::DFS); }
-    iterator end_DFS() { return iterator(*this, INVALID_ID, iterator::iter_type::DFS); }
+    [[nodiscard]] iterator begin_BFS(size_t start) { return iterator(*this, get_node(start), iterator::iter_type::BFS); }
+    [[nodiscard]] iterator begin_BFS(const std::string& name) { return iterator(*this, get_node(name), iterator::iter_type::BFS); }
+    [[nodiscard]] iterator end_BFS() { return iterator(*this, nullptr, iterator::iter_type::BFS); }
+    [[nodiscard]] iterator begin_DFS(size_t start) { return iterator(*this, get_node(start), iterator::iter_type::DFS); }
+    [[nodiscard]] iterator begin_DFS(const std::string& name) { return iterator(*this, get_node(name), iterator::iter_type::DFS); }
+    [[nodiscard]] iterator end_DFS() { return iterator(*this, nullptr, iterator::iter_type::DFS); }
 
 private:
     [[nodiscard]] inline size_t get_node_id(const std::string& name) const;
     [[nodiscard]] inline node* get_node(const std::string& name);
+    [[nodiscard]] inline node* get_node(size_t start);
     [[nodiscard]] inline node* get_or_create_node(const std::string& name);
 
 private:
     std::vector<node*> m_adjList;
-    //! TODO: Replace id with actual pointer, othervise need to update id.
-    //!       Currently this is a bug.
-    std::map<std::string, size_t> m_nameToId;
+    std::map<std::string, node*> m_nameToId;
 
 };
 
@@ -185,18 +187,26 @@ inline size_t graph::get_node_id(const std::string& name) const
 {
     auto it = m_nameToId.find(name);
     if (it != m_nameToId.end()) {
-        return it->second;
+        return it->second->get_id();
     }
     return INVALID_ID;
 }
 
 inline node* graph::get_node(const std::string& name)
 {
-    const size_t id = get_node_id(name);
-    if (INVALID_ID == id) {
+    auto it = m_nameToId.find(name);
+    if (it != m_nameToId.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
+inline node* graph::get_node(size_t start)
+{
+    if (start >= size()) {
         return nullptr;
     }
-    return m_adjList[id];
+    return m_adjList[start];
 }
 
 inline node* graph::get_or_create_node(const std::string& name)
@@ -208,7 +218,7 @@ inline node* graph::get_or_create_node(const std::string& name)
     const size_t id = m_adjList.size();
     n = new node(id, name);
     m_adjList.push_back(n);
-    m_nameToId.insert({name, id});
+    m_nameToId.insert({name, n});
     return n;
 }
 
@@ -245,7 +255,7 @@ bool graph::add_node(const std::string& name)
     const size_t id = m_adjList.size();
     node* n = new node(id, name);
     m_adjList.push_back(n);
-    m_nameToId.insert({name, id});
+    m_nameToId.insert({name, n});
     return true;
 }
 
@@ -259,7 +269,7 @@ bool graph::remove_node(const std::string& name)
 
     size_t id = node->get_id();
 
-    std::vector<impl::node*>::iterator iter = m_adjList.erase(m_adjList.begin() + id);
+    auto iter = m_adjList.erase(m_adjList.begin() + id);
     std::cout << "New idx: " << std::distance(m_adjList.begin(), iter) << std::endl;
     std::cout << "Old idx: " << (*iter)->get_id() << std::endl;
 
@@ -309,20 +319,16 @@ void graph::dump(std::ostream& os) const
 ////////////////////////////////////////////////////////////////////////////////
 ///// graph::iterator
 ////////////////////////////////////////////////////////////////////////////////
-graph::iterator::iterator(graph& graph, size_t start, iter_type type)
-    : m_graph(graph)
-    , m_type(type)
-    , m_node(nullptr)
-    , m_visited(m_graph.size(), false)
+graph::iterator::iterator(const graph& g, node* n, iter_type type)
+    : m_type(type)
+    , m_node(n)
+    , m_visited(g.size(), false)
     , m_deque()
 {
-    if (graph::INVALID_ID == start || m_graph.empty()) {
-        return;
+    if (nullptr != m_node) {
+        m_visited[m_node->get_id()] = true;
+        collect_nodes();
     }
-
-    m_node = m_graph.m_adjList[start];
-    m_visited[start] = true;
-    collect_nodes();
 }
 
 graph::iterator& graph::iterator::operator++()
@@ -351,14 +357,14 @@ graph::iterator graph::iterator::operator++(int)
     return tmp;
 }
 
-bool graph::iterator::operator==(iterator other) const
+bool graph::iterator::operator==(const iterator& other) const
 {
     return (m_type == other.m_type && m_node == other.m_node);
 }
 
-bool graph::iterator::operator!=(iterator other) const
+bool graph::iterator::operator!=(const iterator& other) const
 {
-    return !(*this == other);
+    return !(other == *this);
 }
 
 graph::iterator::reference graph::iterator::operator*() const
@@ -368,8 +374,10 @@ graph::iterator::reference graph::iterator::operator*() const
 
 void graph::iterator::collect_nodes()
 {
-    for (auto* edge : m_node->get_edges()) {
-        node* to = edge->get_to();
+    assert(nullptr != m_node);
+    //for (auto* edge : m_node->get_edges()) {
+    for (auto it = m_node->begin_nods(); it != m_node->end_nods(); ++it) {
+        node* to = *it;
         const size_t id = to->get_id();
         if (!m_visited[id]) {
             m_visited[id] = true;
