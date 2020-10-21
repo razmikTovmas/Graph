@@ -8,20 +8,19 @@
 
 #include <cassert>
 
-#include "Node.hpp"
+#include "node.hpp"
+
+namespace impl
+{
 
 /**
- * @class Graph
+ * @class graph
  * @brief Class representing a graph data structure.
  * 
  * @todo Add API to take iterators.
  */
-class Graph
+class graph
 {
-public:
-    class BreadthFirstIterator;
-    class DepthFirstIterator;
-
 private:
     constexpr static size_t INVALID_ID = std::numeric_limits<size_t>::max();
 
@@ -31,29 +30,29 @@ public:
 
 public:
     /**
-     * @brief Construct a new empty Graph object that doesn't have any nodes or edges.
+     * @brief Construct a new empty graph object that doesn't have any nodes or edges.
      */
-    Graph();
+    graph();
 
     /**
-     * @brief Destroy the Graph object
+     * @brief Destroy the graph object
      */
-    ~Graph();
+    ~graph();
 
     /**
      * @brief Return number of nodes in the graph.
      */
-    [[nodiscard]] inline size_t Size() const noexcept;
+    [[nodiscard]] inline size_t size() const noexcept;
 
     /**
      * @brief Returns true if the graph is empty, false otherwise.
      */
-    [[nodiscard]] inline bool IsEmpty() const noexcept;
+    [[nodiscard]] inline bool empty() const noexcept;
 
     /**
      * @brief Return true if the name already maps to a node, false otherwise.
      */
-    [[nodiscard]] inline bool Contains(const std::string& name) const;
+    [[nodiscard]] inline bool contains(const std::string& name) const;
 
     /**
      * @brief Create a new node and add it to the graph.
@@ -63,7 +62,7 @@ public:
      *  node was created and added, false means that a node with that name already
      *  exists in this graph, and it was not overwritten.
      */
-    bool AddNode(const std::string& name);
+    bool add_node(const std::string& name);
 
     /**
      * @brief Removes the node with the given name
@@ -71,12 +70,12 @@ public:
      * @return value indicates if the node was actually removed, true means name
      *         maped to a node, and the node was removed, false otherwise.
      */
-    bool RemoveNode(const std::string& name);
+    bool remove_node(const std::string& name);
 
     /**
      * @brief Return true if a connection or path exists between from and to nodes.
      */
-    [[nodiscard]] inline bool HasEdge(const std::string& from, const std::string& to);
+    [[nodiscard]] inline bool has_edge(const std::string& from, const std::string& to);
 
     /**
      * @brief Create an edge between from and to with the provided weight.
@@ -86,7 +85,7 @@ public:
      * @return true if the edge was added successfully, false if the edge already
      *          exists (nothing happens in this case).
      */
-    bool AddEdge(const std::string& from, const std::string& to, Edge::Cost_t cost = 1);
+    bool add_edge(const std::string& from, const std::string& to, edge::Cost_t cost = 1);
 
     /**
      * @brief Removes the edge between from and to nodes.
@@ -94,133 +93,95 @@ public:
      * @return true if the edge existed and was removed successfully, false if
      *         either nodes or the edge was not found.
      */
-    bool RemoveEdge(const std::string& from, const std::string& to);
+    bool remove_edge(const std::string& from, const std::string& to);
 
     /**
      * @brief Return an iterator that yields (name, weight) of all the neighboring nodes.
      */
-    NodeIter Neighbors(const std::string& from_name);
+    NodeIter neighbors(const std::string& from_name);
 
     /**
      * @brief Return an iterator that yields the node names (in no particular order).
      */
-    NodeIter Nodes();
+    NodeIter nodes();
 
     /**
      * @brief Return all the edges as an iterator of Edges (named tuples) with values
      *        (from, to, weight). Edges are yielded in no particular order.
      */
-    EdgeIter Edges();
-
-    inline BreadthFirstIterator GetNodeIter(size_t start);
+    EdgeIter edges();
 
     /**
      * @brief Dumps the graph object to ostream.
      */
-    void Dump(std::ostream& os = std::cout) const;
+    void dump(std::ostream& os = std::cout) const;
 
     /**
-     * @class Iterator
+     * @class iterator
      * @brief Iterator class to provide DFS and BFS traversal functionality.
      */
-    class Iterator
+    class iterator
     {
     public:
         using iterator_category = std::forward_iterator_tag;
-        using value_type = Node;
+        using value_type = node;
         using difference_type = size_t;
-        using pointer = Node*;
-        using reference = Node&;
+        using pointer = node*;
+        using reference = node&;
     public:
-        enum class IterType
+        enum class iter_type
         {
             DFS,
             BFS
         };
 
     public:
-        Iterator(Graph& graph, size_t start, IterType type);
-        ~Iterator() = default;
+        iterator(graph& graph, size_t start, iter_type type);
+        ~iterator() = default;
 
-        explicit Iterator(Graph& graph, IterType type);
-        Iterator& operator++();
-        Iterator operator++(int);
+        explicit iterator(graph& graph, iter_type type);
+        iterator& operator++();
+        iterator operator++(int);
 
         //! NOTE: if iter_types are the same, and if nodes they point to
         //        are the same, they are equal
-        bool operator==(Iterator other) const;
-        bool operator!=(Iterator other) const;
+        bool operator==(iterator other) const;
+        bool operator!=(iterator other) const;
         reference operator*() const;
 
     private:
-        void collectNodes();
+        void collect_nodes();
 
     private:
-        Graph& m_graph;
-        IterType m_type;
-        Node* m_node; // nullptr means the end of the graph
+        graph& m_graph;
+        iter_type m_type;
+        node* m_node; // nullptr means the end of the graph
         std::vector<bool> m_visited;
-        std::deque<Node*> m_deque;
+        std::deque<node*> m_deque;
     };
 
-    Iterator BeginBFS(size_t start) { return Iterator(*this, start, Iterator::IterType::BFS); }
-    Iterator EndBFS() { return Iterator(*this, INVALID_ID, Iterator::IterType::BFS); }
-    Iterator BeginDFS(size_t start) { return Iterator(*this, start, Iterator::IterType::DFS); }
-    Iterator EndDFS() { return Iterator(*this, INVALID_ID, Iterator::IterType::DFS); }
+    iterator begin_BFS(size_t start) { return iterator(*this, start, iterator::iter_type::BFS); }
+    iterator end_BFS() { return iterator(*this, INVALID_ID, iterator::iter_type::BFS); }
+    iterator begin_DFS(size_t start) { return iterator(*this, start, iterator::iter_type::DFS); }
+    iterator end_DFS() { return iterator(*this, INVALID_ID, iterator::iter_type::DFS); }
 
 private:
-    [[nodiscard]] inline size_t getNodeId(const std::string& name) const;
-    [[nodiscard]] inline Node* getNode(const std::string& name);
-    [[nodiscard]] inline Node* getOrCreateNode(const std::string& name);
+    [[nodiscard]] inline size_t get_node_id(const std::string& name) const;
+    [[nodiscard]] inline node* get_node(const std::string& name);
+    [[nodiscard]] inline node* get_or_create_node(const std::string& name);
 
 private:
-    std::vector<Node*> m_adjList;
+    std::vector<node*> m_adjList;
     //! TODO: Replace id with actual pointer, othervise need to update id.
     //!       Currently this is a bug.
     std::map<std::string, size_t> m_nameToId;
 
 };
 
-/**
- * @class Graph::BreadthFirstIterator
- * @brief Breadth first iterator for graph
- */
-class Graph::BreadthFirstIterator
-{
-public:
-    BreadthFirstIterator(Graph& graph, size_t start = 0);
-public:
-    bool Next();
-    Node* Get();
-private:
-    Graph& m_graph;
-    std::vector<bool> m_visited;
-    std::queue<Node*> m_queue;
-    Node* m_node;
-};
-
-/**
- * @class Graph::DepthFirstIterator
- * @brief Depth first iterator for graph
- */
-class Graph::DepthFirstIterator
-{
-public:
-    DepthFirstIterator(Graph& graph, size_t start = 0);
-public:
-    bool Next();
-    Node* Get();
-private:
-    Graph& m_graph;
-    std::vector<bool> m_visited;
-    std::stack<Node*> m_stack;
-    Node* m_node;
-};
-
 ////////////////////////////////////////////////////////////////////////////////
-///// Graph
+///// graph
 ////////////////////////////////////////////////////////////////////////////////
-inline size_t Graph::getNodeId(const std::string& name) const
+inline size_t graph::get_node_id(const std::string& name) const
 {
     auto it = m_nameToId.find(name);
     if (it != m_nameToId.end()) {
@@ -229,271 +190,192 @@ inline size_t Graph::getNodeId(const std::string& name) const
     return INVALID_ID;
 }
 
-inline Node* Graph::getNode(const std::string& name)
+inline node* graph::get_node(const std::string& name)
 {
-    const size_t id = getNodeId(name);
+    const size_t id = get_node_id(name);
     if (INVALID_ID == id) {
         return nullptr;
     }
     return m_adjList[id];
 }
 
-inline Node* Graph::getOrCreateNode(const std::string& name)
+inline node* graph::get_or_create_node(const std::string& name)
 {
-    Node* node = getNode(name);
-    if (nullptr != node) {
-        return node;
+    node* n = get_node(name);
+    if (nullptr != n) {
+        return n;
     }
     const size_t id = m_adjList.size();
-    node = new Node(id, name);
-    m_adjList.push_back(node);
+    n = new node(id, name);
+    m_adjList.push_back(n);
     m_nameToId.insert({name, id});
-    return node;
+    return n;
 }
 
-Graph::Graph()
+graph::graph()
     : m_adjList{}
     , m_nameToId{}
 { }
 
-Graph::~Graph()
+graph::~graph()
 {
     std::destroy(m_adjList.begin(), m_adjList.end());
 }
 
-inline size_t Graph::Size() const noexcept
+inline size_t graph::size() const noexcept
 {
     return m_adjList.size();
 }
 
-inline bool Graph::IsEmpty() const noexcept
+inline bool graph::empty() const noexcept
 {
-    return 0 == Size();
+    return 0 == size();
 }
 
-inline bool Graph::Contains(const std::string& name) const
+inline bool graph::contains(const std::string& name) const
 {
     return (m_nameToId.find(name) != m_nameToId.end());
 }
 
-bool Graph::AddNode(const std::string& name)
+bool graph::add_node(const std::string& name)
 {
-    if (Contains(name)) {
+    if (contains(name)) {
         return false;
     }
     const size_t id = m_adjList.size();
-    Node* node = new Node(id, name);
-    m_adjList.push_back(node);
+    node* n = new node(id, name);
+    m_adjList.push_back(n);
     m_nameToId.insert({name, id});
     return true;
 }
 
-bool Graph::RemoveNode(const std::string& name)
+bool graph::remove_node(const std::string& name)
 {
     // Not implemented yet
-    Node* node = getNode(name);
+    node* node = get_node(name);
     if (nullptr == node) {
         return false;
     }
 
-    size_t id = node->GetId();
+    size_t id = node->get_id();
 
-    std::vector<Node*>::iterator iter = m_adjList.erase(m_adjList.begin() + id);
+    std::vector<impl::node*>::iterator iter = m_adjList.erase(m_adjList.begin() + id);
     std::cout << "New idx: " << std::distance(m_adjList.begin(), iter) << std::endl;
-    std::cout << "Old idx: " << (*iter)->GetId() << std::endl;
+    std::cout << "Old idx: " << (*iter)->get_id() << std::endl;
 
     for (; iter != m_adjList.end(); ++iter, ++id) {
-        (*iter)->SetId(id);
-        (void)(*iter)->RemoveEdge(node);
+        (*iter)->set_id(id);
+        (void)(*iter)->remove_edge(node);
     }
 
     return true;
 }
 
-inline bool Graph::HasEdge(const std::string& from, const std::string& to)
+inline bool graph::has_edge(const std::string& from, const std::string& to)
 {
-    Node* fromNode = getNode(from);
-    Node* toNode = getNode(to);
+    node* fromNode = get_node(from);
+    node* toNode = get_node(to);
 
     if (nullptr == fromNode || nullptr == toNode) {
         return false;
     }
 
-    return fromNode->HasEdge(toNode);
+    return fromNode->has_edge(toNode);
 }
 
-bool Graph::AddEdge(const std::string& from, const std::string& to, Edge::Cost_t cost)
+bool graph::add_edge(const std::string& from, const std::string& to, edge::Cost_t cost)
 {
-    Node* fromNode = getOrCreateNode(from);
-    Node* toNode = getOrCreateNode(to);
+    node* fromNode = get_or_create_node(from);
+    node* toNode = get_or_create_node(to);
 
-    return fromNode->AddEdge(toNode, cost);
+    return fromNode->add_edge(toNode, cost);
 }
 
-bool Graph::RemoveEdge(const std::string& from, const std::string& to)
+bool graph::remove_edge(const std::string& from, const std::string& to)
 {
-    Node* fromNode = getNode(from);
-    Node* toNode = getNode(to);
+    node* fromNode = get_node(from);
+    node* toNode = get_node(to);
 
-    return fromNode->RemoveEdge(toNode);
+    return fromNode->remove_edge(toNode);
 }
 
-inline Graph::BreadthFirstIterator Graph::GetNodeIter(size_t start)
-{
-    return BreadthFirstIterator(*this, start);
-}
-
-void Graph::Dump(std::ostream& os) const
+void graph::dump(std::ostream& os) const
 {
     for (const auto* node : m_adjList) {
-        node->Dump(os);
+        node->dump(os);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-///// Graph::BreadthFirstIterator
+///// graph::iterator
 ////////////////////////////////////////////////////////////////////////////////
-Graph::BreadthFirstIterator::BreadthFirstIterator(Graph& graph, size_t start)
-    : m_graph(graph)
-    , m_visited(m_graph.Size(), false)
-    , m_queue({m_graph.m_adjList[start]})
-    , m_node(nullptr)
-{
-    m_visited[start] = true;
-}
-
-bool Graph::BreadthFirstIterator::Next()
-{
-    if (m_queue.empty()) {
-        return false;
-    }
-
-    m_node = m_queue.front();
-    m_queue.pop();
-
-    for (auto* edge : m_node->GetEdges()) {
-        Node* to = edge->GetTo();
-        const size_t id = to->GetId();
-        if (!m_visited[id]) {
-            m_visited[id] = true;
-            m_queue.push(to);
-        }
-    }
-
-    return true;
-}
-
-Node* Graph::BreadthFirstIterator::Get()
-{
-    return m_node;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///// Graph::DepthFirstIterator
-////////////////////////////////////////////////////////////////////////////////
-Graph::DepthFirstIterator::DepthFirstIterator(Graph& graph, size_t start)
-    : m_graph(graph)
-    , m_visited(m_graph.Size(), false)
-    , m_stack({m_graph.m_adjList[start]})
-    , m_node(nullptr)
-{
-    m_visited[start] = true;
-}
-
-bool Graph::DepthFirstIterator::Next()
-{
-    if (m_stack.empty()) {
-        return false;
-    }
-
-    m_node = m_stack.top();
-    m_stack.pop();
-
-    for (auto* edge : m_node->GetEdges()) {
-        Node* to = edge->GetTo();
-        const size_t id = to->GetId();
-        if (!m_visited[id]) {
-            m_visited[id] = true;
-            m_stack.push(to);
-        }
-    }
-
-    return true;
-}
-
-Node* Graph::DepthFirstIterator::Get()
-{
-    return m_node;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///// Graph::Iterator
-////////////////////////////////////////////////////////////////////////////////
-Graph::Iterator::Iterator(Graph& graph, size_t start, IterType type)
+graph::iterator::iterator(graph& graph, size_t start, iter_type type)
     : m_graph(graph)
     , m_type(type)
     , m_node(nullptr)
-    , m_visited(m_graph.Size(), false)
+    , m_visited(m_graph.size(), false)
     , m_deque()
 {
-    if (Graph::INVALID_ID == start || m_graph.IsEmpty()) {
+    if (graph::INVALID_ID == start || m_graph.empty()) {
         return;
     }
 
     m_node = m_graph.m_adjList[start];
     m_visited[start] = true;
-    collectNodes();
+    collect_nodes();
 }
 
-Graph::Iterator& Graph::Iterator::operator++()
+graph::iterator& graph::iterator::operator++()
 {
     if (m_deque.empty()) {
         m_node = nullptr;
         return *this;
     }
 
-    if (IterType::BFS == m_type) {
+    if (iter_type::BFS == m_type) {
         m_node = m_deque.front();
         m_deque.pop_front();
     } else {
         m_node = m_deque.back();
         m_deque.pop_back();
     }
-    collectNodes();
+    collect_nodes();
 
     return *this;
 }
 
-Graph::Iterator Graph::Iterator::operator++(int)
+graph::iterator graph::iterator::operator++(int)
 {
-    Iterator tmp = *this;
+    iterator tmp = *this;
     ++*this;
     return tmp;
 }
 
-bool Graph::Iterator::operator==(Iterator other) const
+bool graph::iterator::operator==(iterator other) const
 {
     return (m_type == other.m_type && m_node == other.m_node);
 }
 
-bool Graph::Iterator::operator!=(Iterator other) const
+bool graph::iterator::operator!=(iterator other) const
 {
     return !(*this == other);
 }
 
-Graph::Iterator::reference Graph::Iterator::operator*() const
+graph::iterator::reference graph::iterator::operator*() const
 {
     return *m_node;
 }
 
-void Graph::Iterator::collectNodes()
+void graph::iterator::collect_nodes()
 {
-    for (auto* edge : m_node->GetEdges()) {
-        Node* to = edge->GetTo();
-        const size_t id = to->GetId();
+    for (auto* edge : m_node->get_edges()) {
+        node* to = edge->get_to();
+        const size_t id = to->get_id();
         if (!m_visited[id]) {
             m_visited[id] = true;
             m_deque.push_back(to);
         }
     }
+}
+
 }

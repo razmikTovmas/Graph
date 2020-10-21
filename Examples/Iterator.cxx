@@ -1,39 +1,39 @@
 #include <iostream>
 #include <vector>
 
-#include "Graph.hpp"
+#include "graph.hpp"
 
 int main()
 {
     std::cout << "DepthFirstIterator!" << std::endl;
 
-    Graph g;
-    std::cout << "Empty: " << g.IsEmpty() << std::endl;
+    impl::graph g;
+    std::cout << "Empty: " << g.empty() << std::endl;
 
-    g.AddNode("A");
-    g.AddNode("B");
-    g.AddNode("C");
+    g.add_node("A");
+    g.add_node("B");
+    g.add_node("C");
 
-    g.AddEdge("A", "B");
-    g.AddEdge("A", "C");
-    g.AddEdge("B", "D");
-    g.AddEdge("D", "E");
-    g.AddEdge("C", "E");
-    g.AddEdge("E", "C");
-    g.AddEdge("C", "A");
+    g.add_edge("A", "B");
+    g.add_edge("A", "C");
+    g.add_edge("B", "D");
+    g.add_edge("D", "E");
+    g.add_edge("C", "E");
+    g.add_edge("E", "C");
+    g.add_edge("C", "A");
 
-    std::cout << "Size: " << g.Size() << std::endl;
+    std::cout << "Size: " << g.size() << std::endl;
 
-    g.Dump();
+    g.dump();
 
     std::cout << "BFS: ";
-    for (auto it = g.BeginBFS(2); it != g.EndBFS(); ++it) {
-        std::cout << (*it).GetName() << ' ';
+    for (auto it = g.begin_BFS(2); it != g.end_BFS(); ++it) {
+        std::cout << (*it).get_name() << ' ';
     }
     std::cout << std::endl;
     std::cout << "DFS: ";
-    for (auto it = g.BeginDFS(2); it != g.EndDFS(); ++it) {
-        std::cout << (*it).GetName() << ' ';
+    for (auto it = g.begin_DFS(2); it != g.end_DFS(); ++it) {
+        std::cout << (*it).get_name() << ' ';
     }
     std::cout << std::endl;
 

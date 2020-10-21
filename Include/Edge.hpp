@@ -2,36 +2,39 @@
 
 #include <tuple>
 
-class Node;
+namespace impl
+{
 
-class Edge
+class node;
+
+class edge
 {
 public:
     using Cost_t = int;
 
 public:
-    Edge(Node* from, Node* to, Cost_t cost)
+    edge(node* from, node* to, Cost_t cost)
         : m_from{from}
         , m_to{to}
         , m_cost{cost}
     { }
 
-    ~Edge() = default;
+    ~edge() = default;
 
-    inline void SetFrom(Node* from) noexcept { m_from = from; }
-    inline void SetTo(Node* to) noexcept { m_to = to; }
+    inline void set_from(node* from) noexcept { m_from = from; }
+    inline void set_to(node* to) noexcept { m_to = to; }
 
-    [[nodiscard]] const Node* GetFrom() const noexcept { return m_from; }
-    [[nodiscard]] Node* GetFrom() noexcept { return m_from; }
-    [[nodiscard]] const Node* GetTo() const noexcept { return m_to; }
-    [[nodiscard]] Node* GetTo() noexcept { return m_to; }
+    [[nodiscard]] const node* get_from() const noexcept { return m_from; }
+    [[nodiscard]] node* get_from() noexcept { return m_from; }
+    [[nodiscard]] const node* get_to() const noexcept { return m_to; }
+    [[nodiscard]] node* get_to() noexcept { return m_to; }
 
-    inline void SetCost(Cost_t cost) noexcept { m_cost = cost; }
-    [[nodiscard]] Cost_t GetCost() const noexcept { return m_cost; }
+    inline void set_cost(Cost_t cost) noexcept { m_cost = cost; }
+    [[nodiscard]] Cost_t get_cost() const noexcept { return m_cost; }
 
 private:
-    Node* m_from;
-    Node* m_to;
+    node* m_from;
+    node* m_to;
     Cost_t m_cost;
 
 };
@@ -43,10 +46,10 @@ private:
 class EdgeEquality
 {
 public:
-    bool operator()(const Edge* lhs, const Edge* rhs)
+    bool operator()(const edge* lhs, const edge* rhs)
     {
-        return std::make_tuple(lhs->GetFrom(), lhs->GetTo(), lhs->GetCost())
-            == std::make_tuple(rhs->GetFrom(), rhs->GetTo(), rhs->GetCost());
+        return std::make_tuple(lhs->get_from(), lhs->get_to(), lhs->get_cost())
+            == std::make_tuple(rhs->get_from(), rhs->get_to(), rhs->get_cost());
     }
 };
 
@@ -57,9 +60,11 @@ public:
 class EdgeEquivalency
 {
 public:
-    bool operator()(const Edge* lhs, const Edge* rhs)
+    bool operator()(const edge* lhs, const edge* rhs)
     {
-        return std::make_tuple(lhs->GetFrom(), lhs->GetTo(), lhs->GetCost())
-             < std::make_tuple(rhs->GetFrom(), rhs->GetTo(), rhs->GetCost());
+        return std::make_tuple(lhs->get_from(), lhs->get_to(), lhs->get_cost())
+             < std::make_tuple(rhs->get_from(), rhs->get_to(), rhs->get_cost());
     }
 };
+
+}

@@ -34,8 +34,7 @@ make -j <job count>
 
 ### Code Examples
 - [Basic Usage](./Examples/Basic.cxx)
-- [Breadth first iterator](./Examples/BreadthFirstIterator.cxx)
-- [Depth first iterator](./Examples/DepthFirstIterator.cxx)
+- [Iterators](./Examples/Iterator.cxx)
 
 ### Running Examples
 ```

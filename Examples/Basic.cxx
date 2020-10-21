@@ -1,28 +1,28 @@
 #include <iostream>
 
-#include "Graph.hpp"
+#include "graph.hpp"
 
 int main()
 {
     std::cout << "Hello graph!" << std::endl;
 
-    Graph g;
-    std::cout << "Empty: " << g.IsEmpty() << std::endl;
+    impl::graph g;
+    std::cout << "Empty: " << g.empty() << std::endl;
 
-    g.AddNode("A");
-    g.AddNode("B");
-    g.AddNode("C");
+    g.add_node("A");
+    g.add_node("B");
+    g.add_node("C");
 
-    g.AddEdge("A", "B", 5);
-    g.AddEdge("A", "C", 2);
-    g.AddEdge("B", "D", 1);
-    g.AddEdge("D", "E", 3);
-    g.AddEdge("C", "E", 4);
-    g.AddEdge("E", "C", 3);
-    g.AddEdge("C", "A", 2);
+    g.add_edge("A", "B", 5);
+    g.add_edge("A", "C", 2);
+    g.add_edge("B", "D", 1);
+    g.add_edge("D", "E", 3);
+    g.add_edge("C", "E", 4);
+    g.add_edge("E", "C", 3);
+    g.add_edge("C", "A", 2);
 
-    std::cout << "Size: " << g.Size() << std::endl;
-    g.Dump();
+    std::cout << "Size: " << g.size() << std::endl;
+    g.dump();
 
     return 0;
 }
