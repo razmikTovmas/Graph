@@ -32,7 +32,7 @@ public:
     /**
      * @brief Get the id of the node.
      */
-    [[nodiscard]] size_t get_id() const { return m_id; };
+    [[nodiscard]] inline size_t get_id() const { return m_id; };
 
     /**
      * @brief Update the id of the node.
@@ -42,7 +42,7 @@ public:
     /**
      * @brief Get the name of the node.
      */
-    [[nodiscard]] const std::string& get_name() const { return m_name; }
+    [[nodiscard]] inline const std::string& get_name() const { return m_name; }
 
     /**
      * @brief Add edge to the destinaion node with the given cost.
@@ -62,17 +62,21 @@ public:
      */
     [[nodiscard]] inline bool remove_edge(node* to);
 
-    std::vector<edge*>::iterator begin() { return m_edges.begin(); }
-    std::vector<edge*>::iterator end() { return m_edges.end(); }
-
-    const std::vector<edge*>& get_edges() { return m_edges; }
-
-
     /**
      * @brief Dumps the node object to ostream.
      */
     void dump(std::ostream &os) const;
 
+private:
+    const std::vector<edge*>& get_edges() { return m_edges; }
+
+    std::vector<edge*>::iterator begin() { return m_edges.begin(); }
+    std::vector<edge*>::iterator end() { return m_edges.end(); }
+
+public:
+    /**
+     * @brief Return an iterator that yields (name, weight) of all the neighboring nodes.
+     */
     class node_iterator
     {
     public:
@@ -82,29 +86,18 @@ public:
         using pointer = node*;
         using reference = node&;
     public:
-        node_iterator(std::vector<edge*>::iterator iter)
-            : m_iter(iter)
-        { }
+        node_iterator(std::vector<edge*>::iterator iter);
 
         ~node_iterator() = default;
 
-        node_iterator& operator++()
-        {
-            ++m_iter;
-            return *this;
-        }
-        node_iterator operator++(int)
-        {
-            node_iterator temp{*this};
-            ++m_iter;
-            return temp;
-        }
+        node_iterator& operator++();
+        node_iterator operator++(int);
 
         //! NOTE: if iter_types are the same, and if nodes they point to
         //        are the same, they are equal
-        bool operator==(const node_iterator& other) const { return m_iter == other.m_iter; }
-        bool operator!=(const node_iterator& other) const { return m_iter != other.m_iter; }
-        pointer operator*() const { return (*m_iter)->get_to(); }
+        bool operator==(const node_iterator& other) const;
+        bool operator!=(const node_iterator& other) const;
+        pointer operator*() const;
 
     private:
         std::vector<edge*>::iterator m_iter;
@@ -120,54 +113,10 @@ private:
 
 };
 
-node::node(size_t id, std::string  name)
-    : m_id(id)
-    , m_name(std::move(name))
-{ }
-
-node::~node()
-{
-    std::destroy(m_edges.begin(), m_edges.end());
 }
 
-inline bool node::has_edge(node* to) const
-{
-    for (auto& edge : m_edges) {
-        if (to == edge->get_to()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool node::add_edge(node* to, edge::Cost_t cost)
-{
-    // if (std::find(m_edges.begin(), m_edges.end(), edge) != m_edges.end()) {
-    //     return false;
-    // }
-    // (from, to) can repeat - supports multigraph (not sure if I need this)
-    edge* e = new edge(this, to, cost);
-    m_edges.push_back(e);
-    return true;
-}
-
-bool node::remove_edge(node* to)
-{
-    for (auto it = m_edges.begin(); it != m_edges.end(); ++it) {
-        if (to == (*it)->get_to()) {
-            m_edges.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
-
-void node::dump(std::ostream &os) const
-{
-    os << m_name << ":" << std::endl;
-    for (auto& edge : m_edges) {
-        os << "  to: " << edge->get_to()->get_name()
-           << ", cost: " << edge->get_cost() << std::endl;
-    }
-}
-}
+////////////////////////////////////////////////////////////////////////////////
+////  Includes  ////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+#include "_node_iterator.hpp"
+#include "_node_impl.hpp"

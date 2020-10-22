@@ -23,6 +23,9 @@ Graphs can be **directed** or **undirected**
 - Breadth first search: [Wiki](https://en.wikipedia.org/wiki/Breadth-first_search)
 - Depth first search: [Wiki](https://en.wikipedia.org/wiki/Depth-first_search)
 
+### Algorithms
+- Mother Node in a Graph: [Info](https://www.geeksforgeeks.org/find-a-mother-vertex-in-a-graph/)
+
 ## How to Build
 
 ```
@@ -35,6 +38,7 @@ make -j <job count>
 ### Code Examples
 - [Basic Usage](./examples/Basic.cxx)
 - [Iterators](./examples/Iterator.cxx)
+- [Mother Node](./examples/MotherNode.cxx)
 
 ### Running Examples
 ```
