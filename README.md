@@ -26,6 +26,7 @@ Graphs can be **directed** or **undirected**
 ### Algorithms
 - Mother Node in a Graph: [Info](https://www.geeksforgeeks.org/find-a-mother-vertex-in-a-graph/)
 - Number of paths between nodes: [Info](https://www.geeksforgeeks.org/count-possible-paths-two-vertices/)
+- Is cyclic: [Info](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)
 
 ## How to Build
 
@@ -41,6 +42,7 @@ make -j <job count>
 - [Iterators](./examples/Iterator.cxx)
 - [Mother Node](./examples/MotherNode.cxx)
 - [Number of paths](./examples/NumOfPaths.cxx)
+- [Number of paths](./examples/IsCyclic.cxx)
 
 ### Running Examples
 ```

@@ -151,8 +151,20 @@ public:
      *          that a cycle contains an infinite number of paths and hence they create a problem.
      */
     size_type num_of_paths(const node* from, const node* to) const;
+
+    /**
+     * @brief Given a directed graph, check whether the graph contains a cycle or not.
+     */
+    bool is_cyclic() const;
     ///@}
 
+private:
+    ///@{ @name Algorithms Utils
+    bool is_cyclic_util(size_type i, std::vector<bool>& visited, std::vector<bool>& stack) const;
+    ///@}
+
+
+public:
     /**
      * @class iterator
      * @brief Iterator class to provide DFS and BFS traversal functionality.
@@ -288,3 +300,4 @@ private:
 #include "_graph_impl.hpp"
 #include "_mother_node.hpp"
 #include "_num_of_paths.hpp"
+#include "_is_cyclic.hpp"

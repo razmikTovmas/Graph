@@ -25,3 +25,4 @@ jobs:
         ./MotherNode
         ./MotherNode
         ./NumOfPaths
+        ./IsCyclic

@@ -11,16 +11,17 @@ int main()
     g.add_edge("B", "D", 1);
     g.add_edge("D", "E", 3);
     g.add_edge("C", "E", 4);
+    g.add_edge("E", "A", 1);
 
     std::cout << "Size: " << g.size() << std::endl;
 
     g.dump();
 
-    const impl::node* from = g.get_node("A");
-    const impl::node* to = g.get_node("C");
-
-    impl::graph::size_type numOfPaths = g.num_of_paths(from, to);
-    std::cout << "The number of paths from " << from << " to " << to << " is : " << numOfPaths << std::endl;
+    if (g.is_cyclic()) {
+        std::cout << "Graph is cyclic" << std::endl;
+    } else {
+        std::cout << "Graph is not cyclic" << std::endl;
+    }
 
     return 0;
 }

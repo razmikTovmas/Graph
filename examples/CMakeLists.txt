@@ -9,3 +9,6 @@ target_link_libraries(MotherNode PRIVATE graph::graph)
 
 add_executable(NumOfPaths NumOfPaths.cxx)
 target_link_libraries(NumOfPaths PRIVATE graph::graph)
+
+add_executable(IsCyclic IsCyclic.cxx)
+target_link_libraries(IsCyclic PRIVATE graph::graph)
