@@ -3,6 +3,10 @@
 namespace impl
 {
 
+node::node(size_type id)
+    : m_id(id)
+{ }
+
 node::node(size_type id, std::string name)
     : m_id(id)
     , m_name(std::move(name))

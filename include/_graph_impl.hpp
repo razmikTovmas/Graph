@@ -8,8 +8,8 @@ namespace impl
 ////////////////////////////////////////////////////////////////////////////////
 inline size_t graph::get_node_id(const std::string& name) const
 {
-    auto it = m_nameToId.find(name);
-    if (it != m_nameToId.end()) {
+    auto it = m_nameToNode.find(name);
+    if (it != m_nameToNode.end()) {
         return it->second->get_id();
     }
     return INVALID_ID;
@@ -17,8 +17,8 @@ inline size_t graph::get_node_id(const std::string& name) const
 
 inline node* graph::get_node(const std::string& name)
 {
-    auto it = m_nameToId.find(name);
-    if (it != m_nameToId.end()) {
+    auto it = m_nameToNode.find(name);
+    if (it != m_nameToNode.end()) {
         return it->second;
     }
     return nullptr;
@@ -26,8 +26,8 @@ inline node* graph::get_node(const std::string& name)
 
 inline const node* graph::get_node(const std::string& name) const
 {
-    auto it = m_nameToId.find(name);
-    if (it != m_nameToId.end()) {
+    auto it = m_nameToNode.find(name);
+    if (it != m_nameToNode.end()) {
         return it->second;
     }
     return nullptr;
@@ -58,18 +58,33 @@ inline node* graph::get_or_create_node(const std::string& name)
     const size_t id = m_adjList.size();
     n = new node(id, name);
     m_adjList.push_back(n);
-    m_nameToId.insert({name, n});
+    m_nameToNode.insert({name, n});
     return n;
 }
 
 graph::graph()
     : m_adjList{}
-    , m_nameToId{}
+    , m_nameToNode{}
 { }
+
+graph::graph(graph&& other)
+    : m_adjList(std::move(other.m_adjList))
+    , m_nameToNode(std::move(other.m_nameToNode))
+{
+    other.m_adjList.clear();
+    other.m_nameToNode.clear();
+}
 
 graph::~graph()
 {
+    clear();
+}
+
+void graph::clear()
+{
+    m_nameToNode.clear();
     std::destroy(m_adjList.begin(), m_adjList.end());
+    m_adjList.clear();
 }
 
 inline size_t graph::size() const noexcept
@@ -84,7 +99,7 @@ inline bool graph::empty() const noexcept
 
 inline bool graph::contains(const std::string& name) const
 {
-    return (m_nameToId.find(name) != m_nameToId.end());
+    return (m_nameToNode.find(name) != m_nameToNode.end());
 }
 
 bool graph::add_node(const std::string& name)
@@ -95,7 +110,7 @@ bool graph::add_node(const std::string& name)
     const size_t id = m_adjList.size();
     node* n = new node(id, name);
     m_adjList.push_back(n);
-    m_nameToId.insert({name, n});
+    m_nameToNode.insert({name, n});
     return true;
 }
 

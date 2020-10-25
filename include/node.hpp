@@ -24,6 +24,7 @@ public:
     using const_edge_iterator = std::vector<edge*>::const_iterator;
 
 public:
+    node(size_type id);
     /**
      * @brief Construct a new node object with the given id and name.
      */
@@ -52,6 +53,11 @@ public:
     [[nodiscard]] inline const std::string& get_name() const { return m_name; }
 
     /**
+     * @brief Update the name of the node.
+     */
+    inline void set_name(std::string name) {  m_name = std::move(name); }
+
+    /**
      * @brief Add edge to the destinaion node with the given cost.
      * 
      * @return true if the edge was added successfully, otherwise false.
@@ -77,9 +83,8 @@ public:
     std::vector<edge*>::iterator begin_edges() { return m_edges.begin(); }
     std::vector<edge*>::iterator end_edges() { return m_edges.end(); }
 
-private:
-    const std::vector<edge*>& get_edges() { return m_edges; }
-
+    const size_type get_num_of_edges() const { return m_edges.size(); }
+    const std::vector<edge*>& get_edges() const { return m_edges; }
 
 public:
     /**
@@ -153,7 +158,7 @@ public:
 
 private:
     size_type m_id;
-    const std::string m_name;
+    std::string m_name;
     std::vector<edge*> m_edges;
 
 };

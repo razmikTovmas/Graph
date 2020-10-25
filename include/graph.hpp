@@ -6,6 +6,8 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 #include <cassert>
 
@@ -41,10 +43,14 @@ public:
      */
     graph();
 
+    graph(graph&& other);
+
     /**
      * @brief Destroy the graph object
      */
     ~graph();
+
+    void clear();
 
     /**
      * @brief Return number of nodes in the graph.
@@ -133,6 +139,9 @@ public:
      * @brief Dumps the graph object to ostream.
      */
     void dump(std::ostream& os = std::cout) const;
+
+    void serialize(const std::string& fileName) const;
+    void deserialize(const std::string& fileName);
 
 public:
     ///@{ @name Algorithms
@@ -287,7 +296,7 @@ private:
 
 private:
     std::vector<node*> m_adjList;
-    std::map<std::string, node*> m_nameToId;
+    std::map<std::string, node*> m_nameToNode;
 
 };
 
@@ -301,3 +310,6 @@ private:
 #include "_mother_node.hpp"
 #include "_num_of_paths.hpp"
 #include "_is_cyclic.hpp"
+
+#include "_serialize.hpp"
+#include "_deserialize.hpp"

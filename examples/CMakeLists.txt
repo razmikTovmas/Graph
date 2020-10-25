@@ -12,3 +12,6 @@ target_link_libraries(NumOfPaths PRIVATE graph::graph)
 
 add_executable(IsCyclic IsCyclic.cxx)
 target_link_libraries(IsCyclic PRIVATE graph::graph)
+
+add_executable(SerializeDeserialize SerializeDeserialize.cxx)
+target_link_libraries(SerializeDeserialize PRIVATE graph::graph)
