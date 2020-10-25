@@ -27,7 +27,7 @@ public:
     using size_type                 = std::size_t;
 
 private:
-    constexpr static size_t INVALID_ID = std::numeric_limits<size_t>::max();
+    constexpr static size_type INVALID_ID = std::numeric_limits<size_type>::max();
 
 public:
     using NodeIter = std::vector<std::string>;
@@ -47,7 +47,7 @@ public:
     /**
      * @brief Return number of nodes in the graph.
      */
-    [[nodiscard]] inline size_t size() const noexcept;
+    [[nodiscard]] inline size_type size() const noexcept;
 
     /**
      * @brief Returns true if the graph is empty, false otherwise.
@@ -121,8 +121,23 @@ public:
 
 
 public:
-    // Algorithms
-    const node* mother_node();
+    ///@{ @name Algorithms
+    /// @brief Algorithms to work with the graph.
+    /**
+     * @brief What is a Mother Vertex?
+     * @details A mother vertex in a graph G = (V,E) is a vertex v such that all
+     *          other vertices in G can be reached by a path from v.
+     * 
+     * @return const pointer to mother node if found, otherwise nullptr.
+     */
+    const node* mother_node() const;
+    /**
+     * @brief Count the total number of ways or paths that exist between two vertices in a directed graph.
+     * @details These paths don’t contain a cycle, the simple enough reason is
+     *          that a cycle contains an infinite number of paths and hence they create a problem.
+     */
+    size_type num_of_paths(const node* from, const node* to) const;
+    ///@}
 
     /**
      * @class iterator
@@ -171,17 +186,77 @@ public:
         std::deque<node*> m_deque;
     };
 
-    [[nodiscard]] iterator begin_BFS(size_t start) { return iterator(*this, get_node(start), iterator::iter_type::BFS); }
+    class const_iterator
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = node;
+        using difference_type = size_t;
+        using pointer = node*;
+        using const_pointer = const node*;
+        using reference = node&;
+        using const_reference = const node&;
+    public:
+        enum class iter_type
+        {
+            DFS,
+            BFS
+        };
+
+    public:
+        explicit const_iterator(const graph& g, const node* n, iter_type type);
+        ~const_iterator() = default;
+
+        const_iterator& operator++();
+        const_iterator operator++(int);
+
+        //! NOTE: if iter_types are the same, and if nodes they point to
+        //        are the same, they are equal
+        bool operator==(const const_iterator& other) const;
+        bool operator!=(const const_iterator& other) const;
+        const_reference operator*() const;
+
+        [[nodiscard]] inline bool is_BFS() const noexcept { return iter_type::BFS == m_type; }
+        [[nodiscard]] inline bool is_DFS() const noexcept { return iter_type::DFS == m_type; }
+
+    private:
+        void collect_nodes();
+
+    private:
+        iter_type m_type;
+        const node* m_node; // nullptr means the end of the graph
+        std::vector<bool> m_visited;
+        std::deque<const node*> m_deque;
+    };
+
+    [[nodiscard]] iterator begin_BFS(size_type start) { return iterator(*this, get_node(start), iterator::iter_type::BFS); }
     [[nodiscard]] iterator begin_BFS(const std::string& name) { return iterator(*this, get_node(name), iterator::iter_type::BFS); }
     [[nodiscard]] iterator end_BFS() { return iterator(*this, nullptr, iterator::iter_type::BFS); }
-    [[nodiscard]] iterator begin_DFS(size_t start) { return iterator(*this, get_node(start), iterator::iter_type::DFS); }
+    [[nodiscard]] iterator begin_DFS(size_type start) { return iterator(*this, get_node(start), iterator::iter_type::DFS); }
     [[nodiscard]] iterator begin_DFS(const std::string& name) { return iterator(*this, get_node(name), iterator::iter_type::DFS); }
     [[nodiscard]] iterator end_DFS() { return iterator(*this, nullptr, iterator::iter_type::DFS); }
 
-private:
-    [[nodiscard]] inline size_t get_node_id(const std::string& name) const;
+    [[nodiscard]] const_iterator begin_BFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator begin_BFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator end_BFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator begin_DFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::DFS); }
+    [[nodiscard]] const_iterator begin_DFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::DFS); }
+    [[nodiscard]] const_iterator end_DFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::DFS); }
+
+    [[nodiscard]] const_iterator cbegin_BFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator cbegin_BFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator cend_BFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::BFS); }
+    [[nodiscard]] const_iterator cbegin_DFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::DFS); }
+    [[nodiscard]] const_iterator cbegin_DFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::DFS); }
+    [[nodiscard]] const_iterator cend_DFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::DFS); }
+
     [[nodiscard]] inline node* get_node(const std::string& name);
-    [[nodiscard]] inline node* get_node(size_t start);
+    [[nodiscard]] inline const node* get_node(const std::string& name) const;
+
+private:
+    [[nodiscard]] inline size_type get_node_id(const std::string& name) const;
+    [[nodiscard]] inline node* get_node(size_type start);
+    [[nodiscard]] inline const node* get_node(size_type start) const;
     [[nodiscard]] inline node* get_or_create_node(const std::string& name);
 
 private:
@@ -198,3 +273,4 @@ private:
 #include "_graph_iterator.hpp"
 #include "_graph_impl.hpp"
 #include "_mother_node.hpp"
+#include "_num_of_paths.hpp"

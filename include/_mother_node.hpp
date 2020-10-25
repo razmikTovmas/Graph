@@ -2,16 +2,10 @@
 
 namespace impl
 {
-/**
- * @brief What is a Mother Vertex?
- * @details A mother vertex in a graph G = (V,E) is a vertex v such that all
- *          other vertices in G can be reached by a path from v.
- * 
- * @return const pointer to mother node if found, otherwise nullptr.
- */
-const node* graph::mother_node()
+
+const node* graph::mother_node() const
 {
-    const graph::size_type numOfNodes = size();
+    const size_type numOfNodes = size();
 
     std::vector<bool> visited(numOfNodes, false);
     auto util = [&visited](auto& node) { visited[node.get_id()] = true; };

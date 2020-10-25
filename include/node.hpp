@@ -19,25 +19,29 @@ namespace impl
 class node
 {
 public:
+    using size_type = std::size_t;
+public:
     /**
      * @brief Construct a new node object with the given id and name.
      */
-    node(size_t id, std::string  name);
+    node(size_type id, std::string  name);
 
     /**
      * @brief Destroy the node object.
      */
     ~node();
 
+    size_type degree() const { return m_edges.size(); }
+
     /**
      * @brief Get the id of the node.
      */
-    [[nodiscard]] inline size_t get_id() const { return m_id; };
+    [[nodiscard]] inline size_type get_id() const { return m_id; };
 
     /**
      * @brief Update the id of the node.
      */
-    void set_id(size_t id) { m_id = id; }
+    void set_id(size_type id) { m_id = id; }
 
     /**
      * @brief Get the name of the node.
@@ -75,7 +79,7 @@ private:
 
 public:
     /**
-     * @brief Return an iterator that yields (name, weight) of all the neighboring nodes.
+     * @brief Iterator class of all the neighboring nodes.
      */
     class node_iterator
     {
@@ -103,17 +107,57 @@ public:
         std::vector<edge*>::iterator m_iter;
     };
 
-    node_iterator begin_nods() { return node_iterator(m_edges.begin()); }
-    node_iterator end_nods() { return node_iterator(m_edges.end()); }
+    /**
+     * @brief Const iterator class of all the neighboring nodes.
+     */
+    class const_node_iterator
+    {
+    public:
+        using iterator_category = std::forward_iterator_tag;
+        using value_type = node;
+        using difference_type = size_t;
+        using pointer = node*;
+        using const_pointer = const node*;
+        using reference = node&;
+        using const_reference = const node&;
+    public:
+        const_node_iterator(std::vector<edge*>::const_iterator iter);
+
+        ~const_node_iterator() = default;
+
+        const_node_iterator& operator++();
+        const_node_iterator operator++(int);
+
+        //! NOTE: if iter_types are the same, and if nodes they point to
+        //        are the same, they are equal
+        bool operator==(const const_node_iterator& other) const;
+        bool operator!=(const const_node_iterator& other) const;
+        const_pointer operator*() const;
+
+    private:
+        std::vector<edge*>::const_iterator m_iter;
+    };
+
+    node_iterator begin_nodes() { return node_iterator(m_edges.begin()); }
+    node_iterator end_nodes() { return node_iterator(m_edges.end()); }
+
+    const_node_iterator begin_nodes() const { return const_node_iterator(m_edges.cbegin()); }
+    const_node_iterator end_nodes() const { return const_node_iterator(m_edges.cend()); }
+
+    const_node_iterator cbegin_nodes() const { return const_node_iterator(m_edges.cbegin()); }
+    const_node_iterator cend_nodes() const { return const_node_iterator(m_edges.cend()); }
+
 
 private:
-    size_t m_id;
+    size_type m_id;
     const std::string m_name;
     std::vector<edge*> m_edges;
 
 };
 
 }
+
+std::ostream& operator<<(std::ostream& os, const impl::node* node);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////  Includes  ////////////////////////////////////////////////////////////////

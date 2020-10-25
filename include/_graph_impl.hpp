@@ -24,7 +24,24 @@ inline node* graph::get_node(const std::string& name)
     return nullptr;
 }
 
+inline const node* graph::get_node(const std::string& name) const
+{
+    auto it = m_nameToId.find(name);
+    if (it != m_nameToId.end()) {
+        return it->second;
+    }
+    return nullptr;
+}
+
 inline node* graph::get_node(size_t start)
+{
+    if (start >= size()) {
+        return nullptr;
+    }
+    return m_adjList[start];
+}
+
+inline const node* graph::get_node(size_t start) const
 {
     if (start >= size()) {
         return nullptr;

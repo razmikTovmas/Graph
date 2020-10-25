@@ -25,12 +25,13 @@ Graphs can be **directed** or **undirected**
 
 ### Algorithms
 - Mother Node in a Graph: [Info](https://www.geeksforgeeks.org/find-a-mother-vertex-in-a-graph/)
+- Number of paths between nodes: [Info](https://www.geeksforgeeks.org/count-possible-paths-two-vertices/)
 
 ## How to Build
 
 ```
-mkdir ./Build
-cd ./Build
+mkdir ./build
+cd ./build
 cmake ..
 make -j <job count>
 ```
@@ -39,10 +40,11 @@ make -j <job count>
 - [Basic Usage](./examples/Basic.cxx)
 - [Iterators](./examples/Iterator.cxx)
 - [Mother Node](./examples/MotherNode.cxx)
+- [Number of paths](./examples/NumOfPaths.cxx)
 
 ### Running Examples
 ```
-cd Build/Examples
+cd build/examples
 ./<example_name>
 ```
 

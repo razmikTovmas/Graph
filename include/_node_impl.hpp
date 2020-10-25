@@ -1,10 +1,9 @@
 #pragma once
 
-
 namespace impl
 {
 
-node::node(size_t id, std::string name)
+node::node(size_type id, std::string name)
     : m_id(id)
     , m_name(std::move(name))
 { }
@@ -16,7 +15,7 @@ node::~node()
 
 inline bool node::has_edge(node* to) const
 {
-    for (auto& edge : m_edges) {
+    for (const edge* edge : m_edges) {
         if (to == edge->get_to()) {
             return true;
         }
@@ -48,11 +47,21 @@ bool node::remove_edge(node* to)
 
 void node::dump(std::ostream &os) const
 {
-    os << m_name << ":" << std::endl;
+    os << this << ":" << std::endl;
     for (auto& edge : m_edges) {
-        os << "  to: " << edge->get_to()->get_name()
+        os << "  to: " << edge->get_to()
            << ", cost: " << edge->get_cost() << std::endl;
     }
 }
 
+}
+
+std::ostream& operator<<(std::ostream& os, const impl::node* node)
+{
+    if (nullptr == node) {
+        os << "'nullptr'";
+    } else {
+        os << '\'' << node->get_name() << '\'';
+    }
+    return os;
 }
