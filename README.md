@@ -28,6 +28,26 @@ Graphs can be **directed** or **undirected**
 - Number of paths between nodes: [Info](https://www.geeksforgeeks.org/count-possible-paths-two-vertices/)
 - Is cyclic: [Info](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)
 
+## Serialization
+```c++
+graph.serialize("fileName");
+graph.deserialize("fileName");
+```
+Serializes the graph to the file, deserialize from the file
+The following will be in the file
+```
+5 
+A 2
+1 5 2 2
+B 1
+3 1
+C 1
+4 4
+D 1
+4 3
+E 1
+0 1
+```
 ## How to Build
 
 ```
