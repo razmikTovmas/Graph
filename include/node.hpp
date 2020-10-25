@@ -20,6 +20,9 @@ class node
 {
 public:
     using size_type = std::size_t;
+    using edge_iterator = std::vector<edge*>::iterator;
+    using const_edge_iterator = std::vector<edge*>::const_iterator;
+
 public:
     /**
      * @brief Construct a new node object with the given id and name.
@@ -71,11 +74,12 @@ public:
      */
     void dump(std::ostream &os) const;
 
+    std::vector<edge*>::iterator begin_edges() { return m_edges.begin(); }
+    std::vector<edge*>::iterator end_edges() { return m_edges.end(); }
+
 private:
     const std::vector<edge*>& get_edges() { return m_edges; }
 
-    std::vector<edge*>::iterator begin() { return m_edges.begin(); }
-    std::vector<edge*>::iterator end() { return m_edges.end(); }
 
 public:
     /**
@@ -144,9 +148,8 @@ public:
     const_node_iterator begin_nodes() const { return const_node_iterator(m_edges.cbegin()); }
     const_node_iterator end_nodes() const { return const_node_iterator(m_edges.cend()); }
 
-    const_node_iterator cbegin_nodes() const { return const_node_iterator(m_edges.cbegin()); }
-    const_node_iterator cend_nodes() const { return const_node_iterator(m_edges.cend()); }
-
+    const_node_iterator cbegin_nodes() const { return begin_nodes(); }
+    const_node_iterator cend_nodes() const { return end_nodes(); }
 
 private:
     size_type m_id;

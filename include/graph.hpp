@@ -30,8 +30,10 @@ private:
     constexpr static size_type INVALID_ID = std::numeric_limits<size_type>::max();
 
 public:
-    using NodeIter = std::vector<std::string>;
-    using EdgeIter = std::vector<std::tuple<std::string, std::string, int>>;
+    using node_iterator = std::vector<node*>::iterator;
+    using const_node_iterator = std::vector<node*>::const_iterator;
+    using neighbor_node_iterator = node::node_iterator;
+    using const_neighbor_node_iterator = node::const_node_iterator;
 
 public:
     /**
@@ -100,25 +102,37 @@ public:
      */
     bool remove_edge(const std::string& from, const std::string& to);
 
-
-    NodeIter neighbors(const std::string& from_name);
+    neighbor_node_iterator begin_neighbors(node* start) { return start->begin_nodes(); };
+    neighbor_node_iterator begin_neighbors(const std::string& name) { return begin_neighbors(get_node(name)); };
+    neighbor_node_iterator end_neighbors(node* start) { return start->end_nodes(); };
+    neighbor_node_iterator end_neighbors(const std::string& name) { return end_neighbors(get_node(name)); };
+    const_neighbor_node_iterator begin_neighbors(const node* start) const { return start->cbegin_nodes(); };
+    const_neighbor_node_iterator begin_neighbors(const std::string& name) const { return begin_neighbors(get_node(name)); };
+    const_neighbor_node_iterator end_neighbors(const node* start) const { return start->cend_nodes(); };
+    const_neighbor_node_iterator end_neighbors(const std::string& name) const { return end_neighbors(get_node(name)); };
+    const_neighbor_node_iterator cbegin_neighbors(const std::string& name) const { return begin_neighbors(name); };
+    const_neighbor_node_iterator cend_neighbors(const std::string& name) const { return end_neighbors(name); };
 
     /**
      * @brief Return an iterator that yields the node names (in no particular order).
      */
-    NodeIter nodes();
+    node_iterator begin_nodes() { return m_adjList.begin(); }
+    node_iterator end_nodes() { return m_adjList.end(); }
+    const_node_iterator begin_nodes() const { return m_adjList.cbegin(); }
+    const_node_iterator end_nodes() const { return m_adjList.cend(); }
+    const_node_iterator cbegin_nodes() const { return begin_nodes(); }
+    const_node_iterator cend_nodes() const { return end_nodes(); }
 
     /**
      * @brief Return all the edges as an iterator of Edges (named tuples) with values
      *        (from, to, weight). Edges are yielded in no particular order.
      */
-    EdgeIter edges();
+    //edge_iterator edges() const;
 
     /**
      * @brief Dumps the graph object to ostream.
      */
     void dump(std::ostream& os = std::cout) const;
-
 
 public:
     ///@{ @name Algorithms
@@ -243,12 +257,12 @@ public:
     [[nodiscard]] const_iterator begin_DFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::DFS); }
     [[nodiscard]] const_iterator end_DFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::DFS); }
 
-    [[nodiscard]] const_iterator cbegin_BFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::BFS); }
-    [[nodiscard]] const_iterator cbegin_BFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::BFS); }
-    [[nodiscard]] const_iterator cend_BFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::BFS); }
-    [[nodiscard]] const_iterator cbegin_DFS(size_type start) const { return const_iterator(*this, get_node(start), const_iterator::iter_type::DFS); }
-    [[nodiscard]] const_iterator cbegin_DFS(const std::string& name) const { return const_iterator(*this, get_node(name), const_iterator::iter_type::DFS); }
-    [[nodiscard]] const_iterator cend_DFS() const { return const_iterator(*this, nullptr, const_iterator::iter_type::DFS); }
+    [[nodiscard]] const_iterator cbegin_BFS(size_type start) const { return begin_BFS(start); }
+    [[nodiscard]] const_iterator cbegin_BFS(const std::string& name) const { return begin_BFS(name); }
+    [[nodiscard]] const_iterator cend_BFS() const { return end_BFS(); }
+    [[nodiscard]] const_iterator cbegin_DFS(size_type start) const { return begin_DFS(start); }
+    [[nodiscard]] const_iterator cbegin_DFS(const std::string& name) const { return begin_DFS(name); }
+    [[nodiscard]] const_iterator cend_DFS() const { return end_DFS(); }
 
     [[nodiscard]] inline node* get_node(const std::string& name);
     [[nodiscard]] inline const node* get_node(const std::string& name) const;

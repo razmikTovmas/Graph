@@ -74,5 +74,4 @@ node::const_node_iterator::const_pointer node::const_node_iterator::operator*() 
     return (*m_iter)->get_to();
 }
 
-
 }
