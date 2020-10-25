@@ -42,7 +42,7 @@ make -j <job count>
 - [Iterators](./examples/Iterator.cxx)
 - [Mother Node](./examples/MotherNode.cxx)
 - [Number of paths](./examples/NumOfPaths.cxx)
-- [Number of paths](./examples/IsCyclic.cxx)
+- [Is cyclic](./examples/IsCyclic.cxx)
 
 ### Running Examples
 ```
