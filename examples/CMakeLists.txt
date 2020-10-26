@@ -15,3 +15,6 @@ target_link_libraries(IsCyclic PRIVATE graph::graph)
 
 add_executable(SerializeDeserialize SerializeDeserialize.cxx)
 target_link_libraries(SerializeDeserialize PRIVATE graph::graph)
+
+add_executable(Dijkstra Dijkstra.cxx)
+target_link_libraries(Dijkstra PRIVATE graph::graph)

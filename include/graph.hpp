@@ -153,18 +153,26 @@ public:
      * 
      * @return const pointer to mother node if found, otherwise nullptr.
      */
-    const node* mother_node() const;
+    [[nodiscard]] const node* mother_node() const;
     /**
      * @brief Count the total number of ways or paths that exist between two vertices in a directed graph.
      * @details These paths don’t contain a cycle, the simple enough reason is
      *          that a cycle contains an infinite number of paths and hence they create a problem.
      */
-    size_type num_of_paths(const node* from, const node* to) const;
+    [[nodiscard]] size_type num_of_paths(const node* from, const node* to) const;
 
     /**
      * @brief Given a directed graph, check whether the graph contains a cycle or not.
      */
-    bool is_cyclic() const;
+    [[nodiscard]] bool is_cyclic() const;
+
+    /**
+     * @brief Given a graph and a source vertex in the graph, find shortest paths
+     *        from source to all vertices in the given graph.
+     * 
+     * @return vector of costs from source to all nodes.
+     */
+    [[nodiscard]] std::vector<edge::Cost_t> dijkstra(size_type start) const;
     ///@}
 
 private:
@@ -310,6 +318,7 @@ private:
 #include "_mother_node.hpp"
 #include "_num_of_paths.hpp"
 #include "_is_cyclic.hpp"
+#include "_dijkstra.hpp"
 
 #include "_serialize.hpp"
 #include "_deserialize.hpp"

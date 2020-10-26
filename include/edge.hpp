@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <limits>
 
 namespace impl
 {
@@ -11,6 +12,7 @@ class edge
 {
 public:
     using Cost_t = int;
+    constexpr static Cost_t INF_COST = std::numeric_limits<Cost_t>::max();
 
 public:
     edge(node* from, node* to, Cost_t cost)
