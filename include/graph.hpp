@@ -11,7 +11,7 @@
 
 #include <cassert>
 
-#include "node.hpp"
+#include "widgets.hpp"
 
 namespace impl
 {
@@ -36,6 +36,8 @@ public:
     using const_node_iterator = std::vector<node*>::const_iterator;
     using neighbor_node_iterator = node::node_iterator;
     using const_neighbor_node_iterator = node::const_node_iterator;
+    using edge_iterator = std::vector<edge*>::iterator;
+    using const_edge_iterator = std::vector<edge*>::const_iterator;
 
 public:
     /**
@@ -173,6 +175,11 @@ public:
      * @return vector of costs from source to all nodes.
      */
     [[nodiscard]] std::vector<edge::Cost_t> dijkstra(size_type start) const;
+
+    /**
+     * @brief Given a directed graph, check whether the graph contains a negative cycle or not.
+     */
+    [[nodiscard]] bool has_negative_cycle() const;
     ///@}
 
 private:
@@ -293,6 +300,14 @@ public:
     [[nodiscard]] const_iterator cbegin_DFS(const std::string& name) const { return begin_DFS(name); }
     [[nodiscard]] const_iterator cend_DFS() const { return end_DFS(); }
 
+    [[nodiscard]] edge_iterator begin_edges() { return m_edges.begin(); }
+    [[nodiscard]] edge_iterator end_edges() { return m_edges.end(); }
+    [[nodiscard]] const_edge_iterator begin_edges() const { return m_edges.cbegin(); }
+    [[nodiscard]] const_edge_iterator end_edges() const { return m_edges.cend(); }
+    [[nodiscard]] const_edge_iterator cbegin_edges() const { return begin_edges(); }
+    [[nodiscard]] const_edge_iterator cend_edges() const { return end_edges(); }
+
+
     [[nodiscard]] inline node* get_node(const std::string& name);
     [[nodiscard]] inline const node* get_node(const std::string& name) const;
 
@@ -301,9 +316,11 @@ private:
     [[nodiscard]] inline node* get_node(size_type start);
     [[nodiscard]] inline const node* get_node(size_type start) const;
     [[nodiscard]] inline node* get_or_create_node(const std::string& name);
+    inline void add_edge(edge* e);
 
 private:
     std::vector<node*> m_adjList;
+    std::vector<edge*> m_edges;
     std::map<std::string, node*> m_nameToNode;
 
 };
@@ -319,6 +336,7 @@ private:
 #include "_num_of_paths.hpp"
 #include "_is_cyclic.hpp"
 #include "_dijkstra.hpp"
+#include "_has_negative_cycle.hpp"
 
 #include "_serialize.hpp"
 #include "_deserialize.hpp"

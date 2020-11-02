@@ -62,8 +62,14 @@ inline node* graph::get_or_create_node(const std::string& name)
     return n;
 }
 
+inline void graph::add_edge(edge* e)
+{
+    m_edges.push_back(e);
+}
+
 graph::graph()
     : m_adjList{}
+    , m_edges{}
     , m_nameToNode{}
 { }
 
@@ -153,7 +159,13 @@ bool graph::add_edge(const std::string& from, const std::string& to, edge::Cost_
     node* fromNode = get_or_create_node(from);
     node* toNode = get_or_create_node(to);
 
-    return fromNode->add_edge(toNode, cost);
+    edge* e = fromNode->add_edge(toNode, cost);
+    if (e == nullptr) {
+        return false;
+    }
+
+    add_edge(e);
+    return true;
 }
 
 bool graph::remove_edge(const std::string& from, const std::string& to)

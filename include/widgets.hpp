@@ -1,15 +1,53 @@
 #pragma once
 
+#include <tuple>
+#include <limits>
+
 #include <string>
 #include <utility>
 #include <vector>
 
 #include <algorithm>
 
-#include "edge.hpp"
-
 namespace impl
 {
+class node;
+
+class edge
+{
+public:
+    using Cost_t = int;
+    constexpr static Cost_t INF_COST = std::numeric_limits<Cost_t>::max();
+
+public:
+    edge(node* from, node* to, Cost_t cost)
+        : m_from{from}
+        , m_to{to}
+        , m_cost{cost}
+    { }
+
+    ~edge() = default;
+
+    inline void set_from(node* from) noexcept { m_from = from; }
+    inline void set_to(node* to) noexcept { m_to = to; }
+
+    [[nodiscard]] inline const node* get_from() const noexcept { return m_from; }
+    [[nodiscard]] inline node* get_from() noexcept { return m_from; }
+    [[nodiscard]] inline const node* get_to() const noexcept { return m_to; }
+    [[nodiscard]] inline node* get_to() noexcept { return m_to; }
+
+    [[nodiscard]] size_t get_from_idx() const noexcept;
+    [[nodiscard]] size_t get_to_idx() const noexcept;
+
+    inline void set_cost(Cost_t cost) noexcept { m_cost = cost; }
+    [[nodiscard]] inline Cost_t get_cost() const noexcept { return m_cost; }
+
+private:
+    node* m_from;
+    node* m_to;
+    Cost_t m_cost;
+
+};
 
 /**
  * @class node
@@ -60,9 +98,9 @@ public:
     /**
      * @brief Add edge to the destinaion node with the given cost.
      * 
-     * @return true if the edge was added successfully, otherwise false.
+     * @return pointer to edge if it was added successfully, otherwise nullptr.
      */
-    [[nodiscard]] bool add_edge(node* to, edge::Cost_t cost = 1);
+    [[nodiscard]] edge* add_edge(node* to, edge::Cost_t cost = 1);
 
     /**
      * @brief Checks weather the edge exists from the current node to the given.
@@ -163,6 +201,7 @@ private:
 
 };
 
+
 }
 
 std::ostream& operator<<(std::ostream& os, const impl::node* node);
@@ -171,4 +210,4 @@ std::ostream& operator<<(std::ostream& os, const impl::node* node);
 ////  Includes  ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 #include "_node_iterator.hpp"
-#include "_node_impl.hpp"
+#include "_widgets_impl.hpp"

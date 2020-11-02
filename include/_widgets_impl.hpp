@@ -3,6 +3,9 @@
 namespace impl
 {
 
+size_t edge::get_from_idx() const noexcept { return m_from->get_id(); }
+size_t edge::get_to_idx() const noexcept { return m_to->get_id(); }
+
 node::node(size_type id)
     : m_id(id)
 { }

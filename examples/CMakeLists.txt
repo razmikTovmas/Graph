@@ -18,3 +18,6 @@ target_link_libraries(SerializeDeserialize PRIVATE graph::graph)
 
 add_executable(Dijkstra Dijkstra.cxx)
 target_link_libraries(Dijkstra PRIVATE graph::graph)
+
+add_executable(HasNegativeCycle HasNegativeCycle.cxx)
+target_link_libraries(HasNegativeCycle PRIVATE graph::graph)
