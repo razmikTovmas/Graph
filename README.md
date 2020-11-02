@@ -27,6 +27,7 @@ Graphs can be **directed** or **undirected**
 - Mother Node in a Graph: [Info](https://www.geeksforgeeks.org/find-a-mother-vertex-in-a-graph/)
 - Number of paths between nodes: [Info](https://www.geeksforgeeks.org/count-possible-paths-two-vertices/)
 - Is cyclic: [Info](https://www.geeksforgeeks.org/detect-cycle-in-a-graph/)
+- Has negative cycle: [Info](https://www.geeksforgeeks.org/detect-negative-cycle-graph-bellman-ford/)
 
 ## Serialization
 ```c++
@@ -63,6 +64,7 @@ make -j <job count>
 - [Mother Node](./examples/MotherNode.cxx)
 - [Number of paths](./examples/NumOfPaths.cxx)
 - [Is cyclic](./examples/IsCyclic.cxx)
+- [Has negative cycle](./examples/HasNegativeCycle.cxx)
 
 ### Running Examples
 ```
