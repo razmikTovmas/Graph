@@ -67,6 +67,17 @@ inline void graph::add_edge(edge* e)
     m_edges.push_back(e);
 }
 
+bool graph::add_edge(node* fromNode, node* toNode, edge::Cost_t cost)
+{
+    edge* e = fromNode->add_edge(toNode, cost);
+    if (e == nullptr) {
+        return false;
+    }
+
+    add_edge(e);
+    return true;
+}
+
 graph::graph()
     : m_adjList{}
     , m_edges{}
@@ -159,13 +170,7 @@ bool graph::add_edge(const std::string& from, const std::string& to, edge::Cost_
     node* fromNode = get_or_create_node(from);
     node* toNode = get_or_create_node(to);
 
-    edge* e = fromNode->add_edge(toNode, cost);
-    if (e == nullptr) {
-        return false;
-    }
-
-    add_edge(e);
-    return true;
+    return add_edge(fromNode, toNode, cost);
 }
 
 bool graph::remove_edge(const std::string& from, const std::string& to)
@@ -174,6 +179,24 @@ bool graph::remove_edge(const std::string& from, const std::string& to)
     node* toNode = get_node(to);
 
     return fromNode->remove_edge(toNode);
+}
+
+bool graph::compare(const graph* g) const
+{
+    if (size() != g->size()) {
+        return false;
+    }
+    if (num_of_edges() != g->num_of_edges()) {
+        return false;
+    }
+    for (size_type i = 0; i < size(); ++i) {
+        const node* lhs = get_node(i);
+        const node* rhs = get_node(i);
+        if (!lhs->compare(rhs)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void graph::dump(std::ostream& os) const

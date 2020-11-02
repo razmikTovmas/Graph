@@ -36,11 +36,13 @@ public:
     [[nodiscard]] inline const node* get_to() const noexcept { return m_to; }
     [[nodiscard]] inline node* get_to() noexcept { return m_to; }
 
-    [[nodiscard]] size_t get_from_idx() const noexcept;
-    [[nodiscard]] size_t get_to_idx() const noexcept;
+    [[nodiscard]] inline size_t get_from_idx() const noexcept;
+    [[nodiscard]] inline size_t get_to_idx() const noexcept;
 
     inline void set_cost(Cost_t cost) noexcept { m_cost = cost; }
     [[nodiscard]] inline Cost_t get_cost() const noexcept { return m_cost; }
+
+    [[nodiscard]] bool compare(const edge* rhs) const noexcept;
 
 private:
     node* m_from;
@@ -95,6 +97,9 @@ public:
      */
     inline void set_name(std::string name) {  m_name = std::move(name); }
 
+    [[nodiscard]] inline edge* get_edge(size_type idx) { return m_edges[idx]; }
+    [[nodiscard]] inline const edge* get_edge(size_type idx) const { return m_edges[idx]; }
+
     /**
      * @brief Add edge to the destinaion node with the given cost.
      * 
@@ -112,6 +117,8 @@ public:
      * @return true if the edge was removed, false if does not exist.
      */
     [[nodiscard]] inline bool remove_edge(node* to);
+
+    [[nodiscard]] bool compare(const node* rhs) const;
 
     /**
      * @brief Dumps the node object to ostream.

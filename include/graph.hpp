@@ -36,8 +36,8 @@ public:
     using const_node_iterator = std::vector<node*>::const_iterator;
     using neighbor_node_iterator = node::node_iterator;
     using const_neighbor_node_iterator = node::const_node_iterator;
-    using edge_iterator = std::vector<edge*>::iterator;
-    using const_edge_iterator = std::vector<edge*>::const_iterator;
+    using edge_iterator = std::vector<const edge*>::iterator;
+    using const_edge_iterator = std::vector<const edge*>::const_iterator;
 
 public:
     /**
@@ -58,6 +58,11 @@ public:
      * @brief Return number of nodes in the graph.
      */
     [[nodiscard]] inline size_type size() const noexcept;
+
+    /**
+     * @brief Return number of edges in the graph.
+     */
+    [[nodiscard]] inline size_type num_of_edges() const noexcept { return m_edges.size(); }
 
     /**
      * @brief Returns true if the graph is empty, false otherwise.
@@ -109,6 +114,8 @@ public:
      *         either nodes or the edge was not found.
      */
     bool remove_edge(const std::string& from, const std::string& to);
+
+    [[nodiscard]] bool compare(const graph* g) const;
 
     neighbor_node_iterator begin_neighbors(node* start) { return start->begin_nodes(); };
     neighbor_node_iterator begin_neighbors(const std::string& name) { return begin_neighbors(get_node(name)); };
@@ -316,11 +323,12 @@ private:
     [[nodiscard]] inline node* get_node(size_type start);
     [[nodiscard]] inline const node* get_node(size_type start) const;
     [[nodiscard]] inline node* get_or_create_node(const std::string& name);
+    [[nodiscard]] inline bool add_edge(node* fromNode, node* toNode, edge::Cost_t cost);
     inline void add_edge(edge* e);
 
 private:
     std::vector<node*> m_adjList;
-    std::vector<edge*> m_edges;
+    std::vector<const edge*> m_edges;
     std::map<std::string, node*> m_nameToNode;
 
 };

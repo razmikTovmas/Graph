@@ -3,8 +3,23 @@
 namespace impl
 {
 
-size_t edge::get_from_idx() const noexcept { return m_from->get_id(); }
-size_t edge::get_to_idx() const noexcept { return m_to->get_id(); }
+inline size_t edge::get_from_idx() const noexcept
+{
+    return m_from->get_id();
+}
+
+inline size_t edge::get_to_idx() const noexcept
+{
+    return m_to->get_id();
+}
+
+
+bool edge::compare(const edge* e) const noexcept
+{
+    assert(nullptr != e);
+    return (m_from == e->m_from && m_to == e->m_to && m_cost == e->m_cost);
+}
+
 
 node::node(size_type id)
     : m_id(id)
@@ -50,6 +65,22 @@ bool node::remove_edge(node* to)
         }
     }
     return false;
+}
+
+bool node::compare(const node* n) const
+{
+    assert(nullptr != n);
+    if (degree() != n->degree()) {
+        return false;
+    }
+    for (size_type i = 0; i < degree(); ++i) {
+        const edge* lhs = get_edge(i);
+        const edge* rhs = n->get_edge(i);
+        if (!lhs->compare(rhs)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void node::dump(std::ostream &os) const

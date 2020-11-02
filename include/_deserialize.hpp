@@ -24,7 +24,7 @@ void graph::deserialize(const std::string& fileName)
             size_type to, cost;
             is >> to >> cost;
             assert(to >= 0 && to < m_adjList.size());
-            (void)m_adjList[i]->add_edge(m_adjList[to], cost);
+            (void)add_edge(m_adjList[i], m_adjList[to], cost);
         }
     }
     m_adjList.shrink_to_fit();
