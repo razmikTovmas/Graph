@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(graph VERSION 1.0.0 LANGUAGES CXX)
 option(console_BUILD_TESTS OFF)
 option(EXAMPLES "Build Examples" ON)
+option(TESTS "Build Tests" ON)
 
 set(CONSOLE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -24,3 +25,8 @@ target_include_directories(graph INTERFACE
 if (EXAMPLES)
   add_subdirectory(examples)
 endif()
+
+if (TESTS)
+  add_subdirectory(tests)
+endif()
+

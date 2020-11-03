@@ -11,19 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: install GTest
+      run: |
+        sudo apt-get install libgtest-dev
+        cd /usr/src/gtest/
+        sudo cmake -DBUILD_SHARED_LIBS=ON
+        sudo make
+        sudo cp *.so /usr/lib
     - name: Build project
       run: |
         mkdir build
         cd build
         cmake ..
         make -j 10
-    - name: Run examples
+    - name: Run gtests
       run: |
-        cd build/examples
-        ./Basic
-        ./Iterator
-        ./MotherNode
-        ./MotherNode
-        ./NumOfPaths
-        ./IsCyclic
-        ./SerializeDeserialize
+        ./build/tests/Gmain
