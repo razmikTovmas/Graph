@@ -142,9 +142,6 @@ bool graph::remove_node(const std::string& name)
     size_t id = node->get_id();
 
     auto iter = m_adjList.erase(m_adjList.begin() + id);
-    std::cout << "New idx: " << std::distance(m_adjList.begin(), iter) << std::endl;
-    std::cout << "Old idx: " << (*iter)->get_id() << std::endl;
-
     for (; iter != m_adjList.end(); ++iter, ++id) {
         (*iter)->set_id(id);
         (void)(*iter)->remove_edge(node);

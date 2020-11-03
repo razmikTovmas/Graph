@@ -15,7 +15,7 @@ int main()
 
     std::cout << "Size: " << g.size() << std::endl;
 
-    g.dump();
+    g.dump(std::cout);
 
     if (g.is_cyclic()) {
         std::cout << "Graph is cyclic" << std::endl;

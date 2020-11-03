@@ -22,7 +22,7 @@ int main()
     g.add_edge("C", "A", 2);
 
     std::cout << "Size: " << g.size() << std::endl;
-    g.dump();
+    g.dump(std::cout);
 
     if (const auto* motherNode = g.mother_node();
         nullptr != motherNode) {

@@ -147,7 +147,7 @@ public:
     /**
      * @brief Dumps the graph object to ostream.
      */
-    void dump(std::ostream& os = std::cout) const;
+    void dump(std::ostream& os) const;
 
     void serialize(const std::string& fileName) const;
     void deserialize(const std::string& fileName);

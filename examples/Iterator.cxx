@@ -24,7 +24,7 @@ int main()
 
     std::cout << "Size: " << g.size() << std::endl;
 
-    g.dump();
+    g.dump(std::cout);
 
     std::cout << "BFS: ";
     for (auto it = g.begin_BFS(2); it != g.end_BFS(); ++it) {

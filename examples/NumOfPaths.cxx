@@ -14,7 +14,7 @@ int main()
 
     std::cout << "Size: " << g.size() << std::endl;
 
-    g.dump();
+    g.dump(std::cout);
 
     const impl::node* from = g.get_node("A");
     const impl::node* to = g.get_node("C");

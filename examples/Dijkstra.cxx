@@ -15,7 +15,7 @@ int main()
 
     std::cout << "Size: " << g.size() << std::endl;
 
-    g.dump();
+    g.dump(std::cout);
     for (auto cost : g.dijkstra(0)) {
         std::cout << "Cost: " << cost << std::endl;
     }
