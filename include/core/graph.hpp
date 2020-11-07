@@ -338,13 +338,13 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 ////  Includes  ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-#include "_graph_iterator.hpp"
-#include "_graph_impl.hpp"
-#include "_mother_node.hpp"
-#include "_num_of_paths.hpp"
-#include "_is_cyclic.hpp"
-#include "_dijkstra.hpp"
-#include "_has_negative_cycle.hpp"
+#include "impl/_graph_iterator.hpp"
+#include "impl/_graph.hpp"
+#include "impl/_mother_node.hpp"
+#include "impl/_num_of_paths.hpp"
+#include "impl/_is_cyclic.hpp"
+#include "impl/_dijkstra.hpp"
+#include "impl/_has_negative_cycle.hpp"
 
-#include "_serialize.hpp"
-#include "_deserialize.hpp"
+#include "impl/_serialize.hpp"
+#include "impl/_deserialize.hpp"

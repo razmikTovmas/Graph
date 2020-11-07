@@ -4,7 +4,9 @@ option(console_BUILD_TESTS OFF)
 option(EXAMPLES "Build Examples" ON)
 option(TESTS "Build Tests" ON)
 
-set(CONSOLE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# set(CONSOLE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

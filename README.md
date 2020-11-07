@@ -12,7 +12,7 @@ A **graph** is a structure amounting to a set of objects in which some pairs of 
 - The **nodes** (vertices) where the data is stored i.e. the numbers in the image
 - The **edges** (connections) which connect the nodes i.e. the lines between the numbers in the image
 
-![Graph](./Resources/Graph.png)
+![Graph](./resources/Graph.png)
 
 Graphs can be **directed** or **undirected**
 

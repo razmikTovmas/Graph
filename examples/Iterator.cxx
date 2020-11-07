@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "graph.hpp"
+#include "core/graph.hpp"
 
 int main()
 {
