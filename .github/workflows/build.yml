@@ -20,7 +20,6 @@ jobs:
         sudo cp *.so /usr/lib
     - name: Build project
       run: |
-        mkdir build
         cd build
         cmake ..
         make -j 10
